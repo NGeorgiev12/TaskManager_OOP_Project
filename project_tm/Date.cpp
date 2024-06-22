@@ -35,23 +35,23 @@ Date::Date(const MyString& timeStr)
 
 unsigned Date::getDay() const
 {
-	if (!good()) throw std::invalid_argument("Date::getDay() Invalid day");
+	if (!good()) throw std::invalid_argument("Date::getDay() Invalid day!");
 	return day;
 }
 unsigned Date::getMonth() const
 {
-	if (!good()) throw std::invalid_argument("Date::getMonth() Invalid day");
+	if (!good()) throw std::invalid_argument("Date::getMonth() Invalid month!");
 	return month;
 }
 unsigned Date::getYear() const
 {
-	if (!good()) throw std::invalid_argument("Date::getYear() Invalid day");
+	if (!good()) throw std::invalid_argument("Date::getYear() Invalid year!");
 	return year;
 }
 
 void Date::setYear(unsigned year)
 {
-	if (!good()) throw std::invalid_argument("Date::getDay() Invalid day");
+	if (!good()) throw std::invalid_argument("Date::setYear() Invalid year!");
 
 	this->year = year;
 	if (isLeapYear())
@@ -65,14 +65,14 @@ void Date::setYear(unsigned year)
 
 void Date::setDay(unsigned day)
 {
-	if (!good()) throw std::invalid_argument("Date::getMonth() Invalid day");
+	if (!good()) throw std::invalid_argument("Date::setDay() Invalid day!");
 	this->day = day;
 	isModified = true;
 	validateDate();
 }
 void Date::setMonth(unsigned month)
 {
-	if (!good()) return;
+	if (!good()) throw std::invalid_argument("Date::setMonth() Invalid month!");
 	this->month = month;
 	isModified = true;
 	validateDate();
@@ -146,7 +146,7 @@ void Date::validateDate()
 bool Date::validStringDate(const char* buff) const
 {
 	if (!buff)
-		throw std::runtime_error("Nullpointer check for dateString");
+		throw std::runtime_error("Nullpointer check for dateString!");
 
 	for (int i = 0; i < strlen(buff); i++)
 	{
@@ -234,10 +234,10 @@ bool operator!=(const Date& lhs, const Date& rhs)
 bool operator<(const Date& lhs, const Date& rhs)
 {
 	if (!lhs.good())
-		throw std::invalid_argument("LHS date is invalid");
+		throw std::invalid_argument("LHS date is invalid!");
 
 	if (!rhs.good())
-		throw std::invalid_argument("RHS date is invalid");
+		throw std::invalid_argument("RHS date is invalid!");
 
 	if (lhs.getYear() > rhs.getYear())
 		return false;

@@ -37,7 +37,7 @@ TaskManager::TaskManager(const char* fileName)
 
 	if (!ifs.is_open())
 	{
-		throw std::runtime_error("Cannot open stream");
+		throw std::runtime_error("Cannot open stream!");
 	}
 
 	loadFromBinary(ifs);
@@ -58,7 +58,7 @@ const Vector<Collaboration>& TaskManager::getCollabs() const
 	return collabs;
 }
 
-int TaskManager::getCurrentUserId() const
+int TaskManager::getCurrentUserIndex() const
 {
 	return currentUserIndex;
 }
@@ -86,6 +86,26 @@ void TaskManager::startTaskOfUser(int userIndex, unsigned taskId)
 void TaskManager::updateTaskDescrOfUser(int userIndex, unsigned taskId, MyString&& newDesc)
 {
 	users[userIndex].updateTaskDescription(taskId, std::move(newDesc));
+}
+
+void TaskManager::addTaskToUserDashBoard(int userIndex, unsigned taskId)
+{
+	users[userIndex].addTaskToDashBoard(taskId);
+}
+
+bool TaskManager::isTaskInUserDashBoard(int userIndex, unsigned taskId) const
+{
+	return users[userIndex].isTaskInDashBoard(taskId);
+}
+
+void TaskManager::removeTaskFromUserDashBoard(int userIndex, unsigned taskId)
+{
+	users[userIndex].removeTaskFromDashBoard(taskId);
+}
+
+void TaskManager::deleteUserTask(int userIndex, unsigned taskId)
+{
+	users[userIndex].deleteTask(taskId);
 }
 
 //const Optional<User>& TaskManager::getUser() const

@@ -128,16 +128,23 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AddTaskCommand.cpp" />
+    <ClCompile Include="AddTaskToDashBoardCommand.cpp" />
     <ClCompile Include="Collaboration.cpp" />
     <ClCompile Include="CollaborationTask.cpp" />
     <ClCompile Include="Command.cpp" />
     <ClCompile Include="DashBoard.cpp" />
     <ClCompile Include="Date.cpp" />
+    <ClCompile Include="DeleteTaskCommand.cpp" />
+    <ClCompile Include="FinishTaskCommand.cpp" />
+    <ClCompile Include="GetTaskCommand.cpp" />
+    <ClCompile Include="ListCompletedTasksCommand.cpp" />
+    <ClCompile Include="ListDashBoardCommand.cpp" />
     <ClCompile Include="ListTasksCommand.cpp" />
     <ClCompile Include="LoginCommand.cpp" />
     <ClCompile Include="MyString.cpp" />
     <ClCompile Include="project_tm.cpp" />
     <ClCompile Include="RegisterCommand.cpp" />
+    <ClCompile Include="RemoveTaskFromDashBoardCommand.cpp" />
     <ClCompile Include="SimpleTaskPrinter.cpp" />
     <ClCompile Include="StartTaskCommand.cpp" />
     <ClCompile Include="Task.cpp" />
@@ -149,16 +156,23 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AddTaskCommand.h" />
+    <ClInclude Include="AddTaskToDashBoardCommand.h" />
     <ClInclude Include="Collaboration.h" />
     <ClInclude Include="CollaborationTask.h" />
     <ClInclude Include="Command.h" />
     <ClInclude Include="DashBoard.h" />
     <ClInclude Include="Date.h" />
+    <ClInclude Include="DeleteTaskCommand.h" />
+    <ClInclude Include="FinishTaskCommand.h" />
+    <ClInclude Include="GetTaskCommand.h" />
+    <ClInclude Include="ListCompletedTasksCommand.h" />
+    <ClInclude Include="ListDashBoardCommand.h" />
     <ClInclude Include="ListTasksCommand.h" />
     <ClInclude Include="LoginCommand.h" />
     <ClInclude Include="MyString.h" />
     <ClInclude Include="Optional.hpp" />
     <ClInclude Include="RegisterCommand.h" />
+    <ClInclude Include="RemoveTaskFromDashBoardCommand.h" />
     <ClInclude Include="SimpleTaskPrinter.h" />
     <ClInclude Include="StartTaskCommand.h" />
     <ClInclude Include="Task.h" />

@@ -13,6 +13,7 @@ public:
 	const DashBoard& getDashBoard() const;
 	const Vector<Task>& getTasks() const;
 	const Vector<MyString>& getCollabNames() const;
+	const Vector<CollaborationTask*>& getCollabTasksPtrs() const;
 
 	void setUsername(const MyString& newUsername);
 	void setPassword(const MyString& newPassword);
@@ -22,11 +23,14 @@ public:
 
 	void addTask(Task&& task);
 	void updateTaskName(unsigned id, MyString&& newName);
-	void startTask(int id);
-	void updateTaskDescription(int id, MyString&& newDescription);
-
-	/*void deleteTask(int id);
-	void getTask(const MyString& name);
+	void startTask(unsigned id);
+	void updateTaskDescription(unsigned id, MyString&& newDescription);
+	void addTaskToDashBoard(unsigned id);
+	bool isTaskInDashBoard(unsigned id) const;
+	void removeTaskFromDashBoard(unsigned id);
+	void deleteTask(unsigned taskId);
+	void setTaskStatus(Status status, unsigned taskId);
+	/*void getTask(const MyString& name);
 	void getTask(int id);
 	void listTasks(const Date& date);
 	void listTasks();
@@ -58,7 +62,10 @@ private:
 	void regulateId();*/
 	//void modifyDashboard();
 	bool isIdUnique(unsigned id) const;
+	bool isCollabIdUnique(unsigned id) const;
 	unsigned findTaskIndexById(int id) const;
+	void createDashBoard();
+	void setTaskStatus(unsigned taskId, Status status);
 	
 };
 

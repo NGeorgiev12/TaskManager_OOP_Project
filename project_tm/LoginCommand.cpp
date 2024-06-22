@@ -19,10 +19,10 @@ void LoginCommand::execute()
 				std::cout << "Welcome back, " << username << '!' << std::endl;
 				return;
 			}
-			throw std::invalid_argument("Invalid password");
+			throw std::invalid_argument("Invalid password!");
 			return;
 		}
 	}
 
-	throw std::invalid_argument("Invalid username");
+	throw std::invalid_argument("Invalid username!");
 }

@@ -7,8 +7,9 @@ StartTaskCommand::StartTaskCommand(TaskManager& taskMan, unsigned taskId) : Comm
 
 void StartTaskCommand::execute()
 {
-	if (taskManager.getCurrentUserId() == -1)
+	if (taskManager.getCurrentUserIndex() == -1)
 		throw std::invalid_argument("You need to login first!");
 
-	taskManager.startTaskOfUser(taskManager.getCurrentUserId(), taskId);
+	taskManager.startTaskOfUser(taskManager.getCurrentUserIndex(), taskId);
+	std::cout << "Task started successfully!" << std::endl;
 }

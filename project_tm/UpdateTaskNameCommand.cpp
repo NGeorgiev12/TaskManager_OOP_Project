@@ -8,10 +8,11 @@ UpdateTaskNameCommand::UpdateTaskNameCommand(TaskManager& taskMan, unsigned id, 
 
 void UpdateTaskNameCommand::execute()
 {
-	if(taskManager.getCurrentUserId() == -1)
+	if(taskManager.getCurrentUserIndex() == -1)
 		throw std::invalid_argument("You need to login first!");
 
-	int userIndex = taskManager.getCurrentUserId();
+	int userIndex = taskManager.getCurrentUserIndex();
 	taskManager.updateTaskNameOfUser(userIndex, id, std::move(name));
+	std::cout << "Task name updated successfully!" << std::endl;
 }
 

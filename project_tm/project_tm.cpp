@@ -13,10 +13,16 @@
 #include "UpdateTaskNameCommand.h"
 #include "StartTaskCommand.h"
 #include "UpdateTaskDescrCommand.h"
+#include "AddTaskToDashBoardCommand.h"
+#include "ListDashBoardCommand.h"
+#include "RemoveTaskFromDashBoardCommand.h"
+#include "DeleteTaskCommand.h"
+#include "GetTaskCommand.h"
+#include "ListCompletedTasksCommand.h"
 
 int main()
 {
-
+	
 	/*TaskManager tm;
 	Command* cmd = new RegisterCommand(tm, "Niki", "123");
 	cmd->execute();
@@ -25,24 +31,46 @@ int main()
 	//std::ofstream ofs("TaskMan1.dat", std::ios::binary | std::ios::out);
 	//tm2.saveToBinary(ofs);
 
-	TaskManager tm2("TaskMan1.dat");
+	TaskManager tm2;
+
+	Command* cmd0 = new RegisterCommand(tm2, "Niki", "123");
+	cmd0->execute();
 	Command* cmd = new LoginCommand(tm2, "Niki", "123");
 	cmd->execute();
 
-	//Command* cmd1 = new AddTaskCommand(tm2, "Task1!", Date("2024-06-23"), "Obeli kartofite.");
+	Command* cmd11 = new AddTaskCommand(tm2, "Task1!", Date("2024-05-23"), "Obeli domatite.");
+	cmd11->execute();
 
-	Command* cmd2 = new ListTasksCommand(tm2);
+	Command* cmd1 = new AddTaskCommand(tm2, "Task1!", Date("2024-06-23"), "Obeli kartofite.");
+	cmd1 -> execute();
+
+	Command* cmd10 = new GetTaskCommand(tm2, "Task");
+	cmd10->execute();
+	/*Command* cmd6 = new AddTaskToDashBoardCommand(tm2, 1);
+	cmd6->execute();
+
+	Command* cmd8 = new RemoveTaskFromDashBoardCommand(tm2, 1);
+	cmd8->execute();*/
+
+	/*Command* cmd9 = new DeleteTaskCommand(tm2, 1);
+	cmd9->execute();*/
+
+	/*Command* cmd7 = new ListDashBoardCommand(tm2);
+	cmd7->execute();*/
+
+	/*Command* cmd2 = new ListTasksCommand(tm2);
+	cmd2->execute();*/
 
 	/*Command* cmd3 = new UpdateTaskNameCommand(tm2, 1, "TaskPesho");
 	cmd3->execute();*/
-	//cmd1 -> execute();
+	
 	
 	/*Command* cmd4 = new StartTaskCommand(tm2, 1);
 	cmd4->execute();*/
 
-	Command* cmd5 = new UpdateTaskDescrCommand(tm2, 1, "Obeli patladganite");
+	/*Command* cmd5 = new UpdateTaskDescrCommand(tm2, 1, "Obeli patladganite");
 	cmd5->execute();
-	cmd2->execute();
+	cmd2->execute();*/
 	////Task task;
 	/////*task.setDate(MyString("2020-12-12"));
 	////task.setDescription(MyString("task 1 description"));
@@ -224,7 +252,7 @@ int main()
 
 	//tm.loadFromBinary(ifs5);
 
-	//std::cout << tm.getCurrentUserId() << std::endl;
+	//std::cout << tm.getCurrentUserIndex() << std::endl;
 	//std::cout << std::endl;
 
 	//std::cout << tm.getName() << std::endl;

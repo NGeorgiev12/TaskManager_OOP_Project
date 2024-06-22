@@ -35,3 +35,11 @@ void SimpleTaskPrinter::print(const Task& task) const
 
 	}
 }
+
+void SimpleTaskPrinter::print(const CollaborationTask& collabTask) const
+{
+	Task task = collabTask;
+	print(task);
+	std::cout << "Assignee: " << collabTask.getAssignee() << std::endl;
+
+}

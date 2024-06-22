@@ -17,13 +17,17 @@ public:
 	const MyString& getName() const;
 	const Vector<User>& getUsers() const;
 	const Vector<Collaboration>& getCollabs() const;
-	int getCurrentUserId() const;
+	int getCurrentUserIndex() const;
 
 	void setCurrentUserId(int newId);
 	void addUserTask(Task&& task, int index);
 	void updateTaskNameOfUser(int userIndex, unsigned taskId, MyString&& newName);
 	void startTaskOfUser(int userIndex, unsigned taskId);
 	void updateTaskDescrOfUser(int userIndex, unsigned taskId, MyString&& newDesc);
+	void addTaskToUserDashBoard(int userIndex, unsigned taskId);
+	bool isTaskInUserDashBoard(int userIndex, unsigned taskId) const;
+	void removeTaskFromUserDashBoard(int userIndex, unsigned taskId);
+	void deleteUserTask(int userIndex, unsigned taskId);
 	TaskManager(const MyString& name);
 	TaskManager(MyString&& name);
 
@@ -37,6 +41,6 @@ private:
 	Vector<User> users;
 	Vector<Collaboration> collabs;
 
-
+	
 };
 

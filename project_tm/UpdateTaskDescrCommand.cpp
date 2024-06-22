@@ -8,9 +8,10 @@ UpdateTaskDescrCommand::UpdateTaskDescrCommand(TaskManager& tm, unsigned id, MyS
 
 void UpdateTaskDescrCommand::execute()
 {
-	if (taskManager.getCurrentUserId() == -1)
+	if (taskManager.getCurrentUserIndex() == -1)
 		throw std::invalid_argument("You need to login first!");
 
-	int userIndex = taskManager.getCurrentUserId();
+	int userIndex = taskManager.getCurrentUserIndex();
 	taskManager.updateTaskDescrOfUser(userIndex, taskId, std::move(description));
+	std::cout << "Task description updated successfully!" << std::endl;
 }

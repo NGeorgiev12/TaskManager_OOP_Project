@@ -12,7 +12,7 @@ void RegisterCommand::execute()
 	{
 		
 		if (taskManager.getUsers()[i].getUsername() == username)
-			throw std::invalid_argument("User already registered");
+			throw std::invalid_argument("User already registered!");
 	}
 	
 	taskManager.addUser(User(std::move(username), std::move(password)));
