@@ -40,22 +40,29 @@ void Task::setTaskName(const MyString& newName)
 	taskName = newName;
 }
 
-void Task::setStatus()
-{
-	status = Status::ON_HOLD;
-}
-
 void Task::setDescription(const MyString& newDesc)
 {
 	description = newDesc;
 }
 
-Task::Task(unsigned id, const MyString& name, const MyString& timeStr, const MyString& desc) : dueDate(timeStr)
+void Task::setStatus(const Status& newStatus)
 {
-	setId(id);
-	setTaskName(name);
-	setDescription(desc);
-	setStatus();
+	status = newStatus;
+}
+
+//Task::Task(unsigned id, const MyString& name, const Date& timeStr, const MyString& desc) : dueDate(timeStr)
+//{
+//	setId(id);
+//	setTaskName(name);
+//	setDescription(desc);
+//}
+
+Task::Task(unsigned id, MyString&& name, Optional<Date>&& dueDate, MyString&& desc)
+{
+	this->id = id;
+	this->taskName = std::move(name);
+	this->dueDate = std::move(dueDate);
+	this->description = std::move(desc);
 }
 
 Task::Task(unsigned id, const MyString& name, const MyString& desc)
@@ -63,11 +70,13 @@ Task::Task(unsigned id, const MyString& name, const MyString& desc)
 	setId(id);
 	setTaskName(name);
 	setDescription(desc);
-	setStatus();
 }
 
 bool Task::isDueDateToday() const
 {
+	if (!dueDate.has_value())
+		return false;
+
 	std::time_t t = time(0);
 	std::tm* now = std::localtime(&t);
 
@@ -78,3 +87,6 @@ bool Task::isDueDateToday() const
 
 	return currentDay == dueDate.value();
 }
+
+
+

@@ -1,5 +1,6 @@
 #pragma once
 #include <iostream>
+#include <fstream>
 
 class MyString
 {
@@ -26,6 +27,8 @@ public:
 
     friend std::ostream& operator<<(std::ostream& os, const MyString& obj);
     friend std::istream& operator>>(std::istream& is, MyString& ref);
+    void saveToBinaryFile(std::ofstream& ofs) const;
+    void loadFromBinaryFile(std::ifstream& ifs);
 
 private:
     void resize(unsigned newAllocatedDataSize);

@@ -40,18 +40,19 @@ unsigned Date::getDay() const
 }
 unsigned Date::getMonth() const
 {
-	if (!good()) throw std::invalid_argument("Date::getDay() Invalid day");
+	if (!good()) throw std::invalid_argument("Date::getMonth() Invalid day");
 	return month;
 }
 unsigned Date::getYear() const
 {
-	if (!good()) throw std::invalid_argument("Date::getDay() Invalid day");
+	if (!good()) throw std::invalid_argument("Date::getYear() Invalid day");
 	return year;
 }
 
 void Date::setYear(unsigned year)
 {
-	if (!good()) return;
+	if (!good()) throw std::invalid_argument("Date::getDay() Invalid day");
+
 	this->year = year;
 	if (isLeapYear())
 		MAX_DAYS[1] = 29;
@@ -64,7 +65,7 @@ void Date::setYear(unsigned year)
 
 void Date::setDay(unsigned day)
 {
-	if (!good()) return;
+	if (!good()) throw std::invalid_argument("Date::getMonth() Invalid day");
 	this->day = day;
 	isModified = true;
 	validateDate();
@@ -208,17 +209,54 @@ void Date::clear()
 
 bool operator==(const Date& lhs, const Date& rhs)
 {
-	if (lhs.getYear() != rhs.getYear())
-		return false;
-
-	if (lhs.getMonth() != rhs.getMonth())
-		return false;
-
-	return lhs.getDay() == rhs.getDay();
-		
+	return !(lhs < rhs) && !(rhs < lhs);
 }
 
 bool operator!=(const Date& lhs, const Date& rhs)
 {
 	return !(lhs == rhs);
 }
+
+bool operator<(const Date& lhs, const Date& rhs)
+{
+	if (!lhs.good())
+		throw std::invalid_argument("LHS date is invalid");
+
+	if (!rhs.good())
+		throw std::invalid_argument("RHS date is invalid");
+
+	if (lhs.getYear() > rhs.getYear())
+		return false;
+	else if (lhs.getYear() == rhs.getYear())
+	{
+		if (lhs.getMonth() > rhs.getMonth())
+			return false;
+		else if (lhs.getMonth() == rhs.getMonth())
+			if (lhs.getDay() >= rhs.getDay())
+				return false;
+	}
+
+	return true;
+}
+
+bool operator>=(const Date& lhs, const Date& rhs)
+{
+	return !(lhs < rhs);
+}
+
+bool operator>(const Date& lhs, const Date& rhs)
+{
+	return (lhs >= rhs) && (lhs != rhs);
+}
+
+bool operator<=(const Date& lhs, const Date& rhs)
+{
+	return !(lhs > rhs);
+}
+
+std::ostream& operator<<(std::ostream& os, const Date& date)
+{
+	os << date.getYear() << "-" << date.getMonth() << "-" << date.getDay();
+	return os;
+}
+

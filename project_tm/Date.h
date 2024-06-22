@@ -1,5 +1,7 @@
 #pragma once
 #include "MyString.h"
+#include <fstream>
+#include <ctime>
 
 class Date
 {
@@ -23,7 +25,11 @@ public:
 	void clear();
 	friend bool operator==(const Date& lhs, const Date& rhs);
 	friend bool operator!=(const Date& lhs, const Date& rhs);
-
+	friend bool operator<(const Date& lhs, const Date& rhs);
+	friend bool operator>=(const Date& lhs, const Date& rhs);
+	friend bool operator>(const Date& lhs, const Date& rhs);
+	friend bool operator<=(const Date& lhs, const Date& rhs);
+	friend std::ostream& operator<<(std::ostream& os, const Date& date);
 
 private:
 	unsigned MAX_DAYS[12] = { 31,28,31,30,31, 30, 31, 31, 30, 31, 30, 31 };

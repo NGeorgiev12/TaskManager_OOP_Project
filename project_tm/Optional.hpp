@@ -14,6 +14,7 @@ private:
 public:
 	Optional() = default;
 	Optional(const T&);
+	Optional(T&& element);
 
 	Optional(const Optional&);
 	Optional& operator=(const Optional&);
@@ -61,6 +62,11 @@ void Optional<T>::moveFrom(Optional&& other)
 
 template<class T>
 Optional<T>::Optional(const T& arg) : data(new T(arg)) {}
+
+template<class T>
+Optional<T>::Optional(T&& element) : data(new T(std::move(element)))
+{
+}
 
 template<class T>
 Optional<T>::Optional(const Optional& other)

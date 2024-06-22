@@ -2,7 +2,7 @@
 #include "MyString.h"
 #include "Optional.hpp"
 #include "Date.h"
-#include <ctime>
+//#include <ctime>
 #pragma warning(disable : 4996)
 
 enum class Status
@@ -25,13 +25,15 @@ public:
 
 	void setId(unsigned newId);
 	void setTaskName(const MyString& newName);
-	void setStatus();
 	void setDescription(const MyString& newDesc);
+	void setStatus(const Status& newStatus);
 
-	Task(unsigned id, const MyString& name, const MyString& timeStr, const MyString& desc);
+	//Task(unsigned id, const MyString& name, const Date& timeStr, const MyString& desc);
+	Task(unsigned id, MyString&& name, Optional<Date>&& dueDate, MyString&& desc);
 	Task(unsigned id, const MyString& name, const MyString& desc);
+	Task() = default;
 	bool isDueDateToday() const;
-
+	
 private:
 	unsigned id = 0;
 	MyString taskName;
