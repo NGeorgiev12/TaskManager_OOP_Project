@@ -168,6 +168,20 @@ void Date::clear()
 	day = month = year = 1;
 }
 
+void Date::saveToBinary(std::ofstream& ofs) const
+{
+	ofs.write(reinterpret_cast<const char*>(&year), sizeof(unsigned));
+	ofs.write(reinterpret_cast<const char*>(&month), sizeof(unsigned));
+	ofs.write(reinterpret_cast<const char*>(&day), sizeof(unsigned));
+}
+
+void Date::loadFromBinary(std::ifstream& ifs)
+{
+	ifs.read(reinterpret_cast<char*>(&year), sizeof(unsigned));
+	ifs.read(reinterpret_cast<char*>(&month), sizeof(unsigned));
+	ifs.read(reinterpret_cast<char*>(&day), sizeof(unsigned));
+}
+
 //int compareDates(const Date& lhs, const Date& rhs)
 //{
 //	if (lhs.getYear() < rhs.getYear())

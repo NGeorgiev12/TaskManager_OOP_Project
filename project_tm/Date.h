@@ -30,6 +30,8 @@ public:
 	friend bool operator>(const Date& lhs, const Date& rhs);
 	friend bool operator<=(const Date& lhs, const Date& rhs);
 	friend std::ostream& operator<<(std::ostream& os, const Date& date);
+	void saveToBinary(std::ofstream& ofs) const;
+	void loadFromBinary(std::ifstream& ifs);
 
 private:
 	unsigned MAX_DAYS[12] = { 31,28,31,30,31, 30, 31, 31, 30, 31, 30, 31 };

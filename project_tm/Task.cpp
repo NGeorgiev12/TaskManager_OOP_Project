@@ -40,14 +40,34 @@ void Task::setTaskName(const MyString& newName)
 	taskName = newName;
 }
 
+void Task::setTaskName(MyString&& newName)
+{
+	taskName = std::move(newName);
+}
+
 void Task::setDescription(const MyString& newDesc)
 {
 	description = newDesc;
 }
 
+void Task::setDescription(MyString&& newDesc)
+{
+	description = std::move(newDesc);
+}
+
 void Task::setStatus(const Status& newStatus)
 {
 	status = newStatus;
+}
+
+void Task::setDate(const Date& date)
+{
+	this->dueDate = date;
+}
+
+void Task::setDate(Date&& date)
+{
+	this->dueDate = std::move(date);
 }
 
 //Task::Task(unsigned id, const MyString& name, const Date& timeStr, const MyString& desc) : dueDate(timeStr)
@@ -57,12 +77,13 @@ void Task::setStatus(const Status& newStatus)
 //	setDescription(desc);
 //}
 
-Task::Task(unsigned id, MyString&& name, Optional<Date>&& dueDate, MyString&& desc)
+Task::Task(unsigned id, MyString&& name, Optional<Date>&& dueDate, MyString&& desc, Status&& status)
 {
 	this->id = id;
 	this->taskName = std::move(name);
 	this->dueDate = std::move(dueDate);
 	this->description = std::move(desc);
+	this->status = std::move(status);
 }
 
 Task::Task(unsigned id, const MyString& name, const MyString& desc)
@@ -86,6 +107,52 @@ bool Task::isDueDateToday() const
 	currentDay.setDay(now->tm_mday);
 
 	return currentDay == dueDate.value();
+}
+
+void Task::saveToBinary(std::ofstream& ofs) const
+{
+	ofs.write(reinterpret_cast<const char*>(&id), sizeof(unsigned));
+
+	taskName.saveToBinary(ofs);
+
+	if (!dueDate.has_value())
+	{
+		bool temp = false;
+		ofs.write(reinterpret_cast<const char*>(&temp), sizeof(bool));
+	}
+	else
+	{
+		bool temp = true;
+		ofs.write(reinterpret_cast<const char*>(&temp), sizeof(bool));
+		(*dueDate).saveToBinary(ofs);
+	}
+
+	ofs.write(reinterpret_cast<const char*>(&status), sizeof(Status));
+
+	description.saveToBinary(ofs);
+}
+
+void Task::loadFromBinary(std::ifstream& ifs)
+{
+	ifs.read(reinterpret_cast<char*>(&id), sizeof(unsigned));
+
+	taskName.loadFromBinary(ifs);
+
+	bool hasValue = 0;
+	ifs.read(reinterpret_cast<char*>(&hasValue), sizeof(bool));
+	if (hasValue)
+	{
+		Date date;
+		date.loadFromBinary(ifs);
+
+		Optional<Date> temp(std::move(date));
+		
+		dueDate = temp;
+	}
+
+	ifs.read(reinterpret_cast<char*>(&status), sizeof(Status));
+	
+	description.loadFromBinary(ifs);
 }
 
 

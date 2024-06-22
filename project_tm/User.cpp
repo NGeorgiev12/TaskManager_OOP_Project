@@ -1,19 +1,5 @@
 ﻿#include "User.h"
-const char FILE_NAME[32] = "users.dat";
 
-constexpr int MAX_INITIAL_ID = 1024;
-
-//static const Date& getToday()
-//{
-//	std::time_t t = time(0);
-//	std::tm* now = std::localtime(&t);
-//
-//	Date currentDay;
-//	currentDay.setYear(now->tm_year + 1900);
-//	currentDay.setMonth(now->tm_mon + 1);
-//	currentDay.setDay(now->tm_mday);
-//	return currentDay;
-//}
 const MyString& User::getUsername() const
 {
     return username;
@@ -22,6 +8,12 @@ const MyString& User::getUsername() const
 const MyString& User::getPassword() const
 {
     return password;
+}
+
+const DashBoard& User::getDashBoard() const
+{
+    return dashboard;
+
 }
 
 void User::setUsername(const MyString& newUsername)
@@ -34,16 +26,32 @@ void User::setPassword(const MyString& newPassword)
     password = newPassword;
 }
 
-//User::User(const MyString& username, const MyString& password)
-//{
-//    setUsername(username);
-//    setPassword(password);
-//	//modifyDashboard();
-//}
+void User::addCollaborationTask(CollaborationTask* task)
+{
+    collabTasks.pushBack(task);
+}
 
 void User::addTask(Task&& task)
 {
 	tasks.pushBack(std::move(task));
+}
+
+void User::updateTaskName(unsigned id, MyString&& newName)
+{
+    unsigned index = findTaskIndexById(id);
+    tasks[index].setTaskName(std::move(newName));
+}
+
+void User::startTask(int id)
+{
+    unsigned index = findTaskIndexById(id);
+    tasks[index].setStatus(Status::IN_PROCESS);
+}
+
+void User::updateTaskDescription(int id, MyString&& newDescription)
+{
+    unsigned index = findTaskIndexById(id);
+    tasks[index].setDescription(std::move(newDescription));
 }
 
 //void User::updateTask(int id, const MyString& name)
@@ -73,6 +81,70 @@ void User::addTask(Task&& task)
 const Vector<Task>& User::getTasks() const
 {
 	return tasks;
+}
+
+const Vector<MyString>& User::getCollabNames() const
+{
+    return collabTaskNames;
+}
+
+void User::saveUserInBinary(std::ofstream& ofs) const
+{
+    username.saveToBinary(ofs);
+    password.saveToBinary(ofs);
+    dashboard.saveToBinary(ofs);
+    tasks.saveToBinary(ofs);
+    collabTaskNames.saveToBinary(ofs);
+}
+
+void User::loadUserFromBinary(std::ifstream& ifs)
+{
+
+    username.loadFromBinary(ifs);
+
+    password.loadFromBinary(ifs);
+
+    dashboard.loadFromBinary(ifs);
+    // to do?
+
+    tasks.loadFromBinary(ifs);
+    collabTaskNames.loadFromBinary(ifs);
+}
+
+User::User(const MyString& username, const MyString& password, const DashBoard& dashboard, const Vector<Task>& tasks, const Vector<MyString> collabTaskNames) : dashboard(dashboard)
+{
+    this->username = username;
+    this->password = password;
+
+    this->tasks = tasks;
+    this->collabTaskNames = collabTaskNames;
+}
+
+User::User(MyString&& username, MyString&& password)
+{
+    this->username = std::move(username);
+    this->password = std::move(password);
+}
+
+bool User::isIdUnique(unsigned id) const
+{
+    for (int i = 0; i < tasks.getSize(); i++)
+    {
+        if (tasks[i].getId() == id)
+            return false;
+    }
+    return true;
+}
+
+unsigned User::findTaskIndexById(int id) const
+{
+    for (int i = 0; i < tasks.getSize(); i++)
+    {
+        if (tasks[i].getId() == id)
+            return i;
+    }
+
+    throw std::invalid_argument("There is no such task");
 }
 
 //void User::deleteTask(int id)
@@ -157,13 +229,6 @@ const Vector<Task>& User::getTasks() const
 //	}
 //}
 
-//void User::printTask(const Task& task) const
-//{
-//	std::cout << "Task name : " << task.getTaskName() << std::endl;
-//	std::cout << "Task ID : " << task.getId() << std::endl;
-//	std::cout << "Due Date : " << task.getDueDate() << std::endl;
-//	std::cout << "Task name : " << task.getTaskName() << std::endl;
-//}
 //
 //void User::regulateId()
 //{
@@ -178,44 +243,5 @@ const Vector<Task>& User::getTasks() const
 //		
 //}
 
-//void User::modifyDashboard()
-//{
-//	for (int i = 0; i < tasks.getSize(); i++)
-//	{
-//		if (tasks[i].isDueDateToday() && !isTaskInDashBoard(tasks[i]))
-//			dashboard.addTaskToDashboard(tasks[i].getId());
-//
-//		if (isTaskInDashBoard(tasks[i]) && (!tasks[i].isDueDateToday()))
-//		{
-//			dashboard.removeTaskFromDashBoard(tasks[i].getId());
-//			tasks[i].setStatus(Status::OVERDUE);
-//		}	
-//	}
-//}
 
-
-
-//void User::addCurrentTaskToDashboard()
-//{
-//	for (int i = 0; i < )
-//}
-
-//void User::saveUserInBinary(std::ofstream& ofs)
-//{
-//    int passwordSize = password.getSize();
-//    int usernameSize = username.getSize();
-//
-//}
-
-//void User::addTask(const MyString& name, const Date& dueDate, const MyString& description) 
-//{ 
-//    // проверка за равни имена и равни дати
-//    for (int i = 0; i < tasks.getSize(); i++)
-//    {
-//        if (name == tasks[i].getTaskName() && tasks[i].getDueDate() == dueDate)
-//            throw std::invalid_argument("User::addTask Two equal tasks");
-//    }
-//
-//    Task newTask()
-//}
 

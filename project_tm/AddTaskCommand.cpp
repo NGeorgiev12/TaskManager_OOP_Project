@@ -1,18 +1,18 @@
 #include "AddTaskCommand.h"
 
 constexpr unsigned INITIAL_ID = 1;
-static unsigned generateNextId(const Vector<Task>& tasks)
+static unsigned generateNextId(const User& user)
 {
-	if (tasks.empty())
+	if (user.getTasks().empty())
 	{
 		return INITIAL_ID;
 	}
 
-	unsigned lastId = tasks[tasks.getSize() - 1].getId();
+	unsigned lastId = user.getTasks()[user.getTasks().getSize() - 1].getId();
 	return lastId + 1;
 }
 
-AddTaskCommand::AddTaskCommand(TaskManager& tm, MyString&& name, Date&& dueDate, MyString&& description) : Command(taskManager)
+AddTaskCommand::AddTaskCommand(TaskManager& tm, MyString&& name, Date&& dueDate, MyString&& description) : Command(tm)
 {
 	this->name = std::move(name);
 	this->dueDate = std::move(dueDate);
@@ -21,25 +21,19 @@ AddTaskCommand::AddTaskCommand(TaskManager& tm, MyString&& name, Date&& dueDate,
 
 void AddTaskCommand::execute()
 {
-	std::cout << taskManager.getUser().has_value() << std::endl;
+	if (taskManager.getCurrentUserId() == -1)
+		throw std::invalid_argument("You need to login first!");
 
+	const User& user = taskManager.getUsers()[taskManager.getCurrentUserId()];
 
-	if (!taskManager.getUser().has_value())
-		throw std::invalid_argument("There is no user logged in the system");
-
-	const Vector<Task>& tasks = taskManager.getUser().value().getTasks();
-	
-	for (int i = 0; i < tasks.getSize(); i++)
+	for (int i = 0; i < user.getTasks().getSize(); i++)
 	{
-		if (name == tasks[i].getTaskName() && tasks[i].getDueDate() == dueDate)
+		if ((user.getTasks()[i].getTaskName() == name) && (user.getTasks()[i].getDueDate() == dueDate))
 			throw std::invalid_argument("Task already exists");
 	}
 
-	unsigned taskId = generateNextId(tasks);
-
-	taskManager.setUserTask(Task(taskId, std::move(name), std::move(dueDate), std::move(description)));
-
-	/*Task newTask(taskId, name, dueDate, description);
-	newTask.setStatus(Status::ON_HOLD);
-	tasks.pushBack(std::move(newTask))*/;
+	unsigned id = generateNextId(user);
+	taskManager.addUserTask(Task(id, std::move(name), Optional<Date>(dueDate), std::move(description), std::move(Status::ON_HOLD)), taskManager.getCurrentUserId());
+	
+	std::cout << "Task added successfully!" << std::endl;
 }

@@ -110,17 +110,20 @@ const char& MyString::operator[](size_t index) const
     return _data[index]; // no security check!!
 }
 
-void MyString::saveToBinaryFile(std::ofstream& ofs) const
+void MyString::saveToBinary(std::ofstream& ofs) const
 {
     ofs.write(reinterpret_cast<const char*>(&_size), sizeof(size_t));
     ofs.write(reinterpret_cast<const char*>(_data), _size * sizeof(char));
 }
 
-void MyString::loadFromBinaryFile(std::ifstream& ifs)
+void MyString::loadFromBinary(std::ifstream& ifs)
 {
+   
     free();
 
     ifs.read(reinterpret_cast<char*>(&_size), sizeof(size_t));
+
+    //std::cout << _size << std::endl;
 
     _data = new char[_size + 1];
     _data[_size] = '\0';

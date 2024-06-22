@@ -27,8 +27,8 @@ public:
 
     friend std::ostream& operator<<(std::ostream& os, const MyString& obj);
     friend std::istream& operator>>(std::istream& is, MyString& ref);
-    void saveToBinaryFile(std::ofstream& ofs) const;
-    void loadFromBinaryFile(std::ifstream& ifs);
+    void saveToBinary(std::ofstream& ofs) const;
+    void loadFromBinary(std::ifstream& ifs);
 
 private:
     void resize(unsigned newAllocatedDataSize);

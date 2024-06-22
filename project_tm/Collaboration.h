@@ -1,8 +1,8 @@
 #pragma once
-#include "Vector.hpp"
-#include "Task.h"
 #include "CollaborationTask.h"
-#include "Optional.hpp"
+#include "User.h"
+#include "Vector.hpp"
+#include <fstream>
 
 class Collaboration
 {
@@ -10,14 +10,23 @@ public:
 	unsigned getId() const;
 	const MyString& getName() const;
 	const Vector<CollaborationTask>& getTasks() const;
-	const User& getCreator() const;
-	const Vector<User>& getWorkGroup() const;
+	
+	CollaborationTask* getCollTaskPtr(unsigned index);
 
+	const MyString& getCreator() const;
+	const Vector<MyString>& getWorkGroup() const;
+
+	void saveToBinary(std::ofstream& ofs) const;
+	void loadFromBinary(std::ifstream& ifs);
+
+	Collaboration(const Vector<MyString>& workGroup, const MyString& creator, const Vector<CollaborationTask>& tasks, const MyString& name, unsigned id);
+	Collaboration() = default;
 private:
-	Vector<User> workGroup;
-	User creator;
+	Vector<MyString> workGroup;
+	MyString creator;
 	Vector<CollaborationTask> tasks;
 	MyString name;
 	unsigned id = 0;
+
 };
 

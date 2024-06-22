@@ -8,44 +8,13 @@ RegisterCommand::RegisterCommand(TaskManager& taskManager, MyString&& username, 
 
 void RegisterCommand::execute()
 {
-	MyString fileName(taskManager.getName());
-	fileName += "Users.dat";
-
-	std::ifstream ifs(fileName.c_str(), std::ios::binary | std::ios::in);
-
-	if (!ifs.is_open())
+	for (int i = 0; i <taskManager.getUsers().getSize(); i++)
 	{
-		std::ofstream ofs(fileName.c_str(), std::ios::binary | std::ios::out);
-
-		username.saveToBinaryFile(ofs);
-		password.saveToBinaryFile(ofs);
-
-		std::cout << "Registered successfully!\n";
-		return;
-	}
-
-	Vector<MyString> users;
-	while (!ifs.eof())
-	{
-		MyString temp;
-		temp.loadFromBinaryFile(ifs);
-		users.pushBack(std::move(temp));
-	}
-
-	ifs.clear();
-	ifs.close();
-
-	for (int i = 0; i < users.getSize(); i++)
-	{
-		std::cout << users[i] << std::endl;
 		
-		if (users[i] == username)
+		if (taskManager.getUsers()[i].getUsername() == username)
 			throw std::invalid_argument("User already registered");
 	}
-
-	std::ofstream ofs(fileName.c_str(), std::ios::binary | std::ios::out | std::ios::app);
-	username.saveToBinaryFile(ofs);
-	password.saveToBinaryFile(ofs);
-
-	std::cout << "Registered successfully!1\n";
+	
+	taskManager.addUser(User(std::move(username), std::move(password)));
+	std::cout << "Registered successfully!\n";
 }

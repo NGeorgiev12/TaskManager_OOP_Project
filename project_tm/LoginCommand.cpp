@@ -8,33 +8,14 @@ LoginCommand::LoginCommand(TaskManager& taskMan, MyString&& username, MyString&&
 
 void LoginCommand::execute()
 {
-	MyString fileName(taskManager.getName());
-	fileName += "Users.dat";
 
-	std::ifstream ifs(fileName.c_str(), std::ios::binary | std::ios::in);
-
-	if (!ifs.is_open())
-		throw std::invalid_argument("User is not in the system");
-
-	Vector<MyString> users;
-	while (!ifs.eof())
+	for (int i = 0; i < taskManager.getUsers().getSize(); i++)
 	{
-		MyString temp;
-		temp.loadFromBinaryFile(ifs);
-		users.pushBack(std::move(temp));
-	}
-
-	ifs.clear();
-	ifs.close();
-
-	for (int i = 0; i < users.getSize(); i+=2)
-	{
-		if (users[i] == username)
+		if (taskManager.getUsers()[i].getUsername() == username)
 		{
-			if (users[i + 1] == password)
+			if (taskManager.getUsers()[i].getPassword() == password)
 			{
-				taskManager.setUser(User()); //!!!!!
-				// da se zaredi v taskmanagera !!!!!!!!!!!!! 
+				taskManager.setCurrentUserId(i);
 				std::cout << "Welcome back, " << username << '!' << std::endl;
 				return;
 			}

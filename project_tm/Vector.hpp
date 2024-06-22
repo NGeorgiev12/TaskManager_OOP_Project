@@ -1,5 +1,10 @@
 ﻿#pragma once
 #include <fstream>
+#include "Task.h"
+#include "MyString.h"
+#include "CollaborationTask.h"
+//#include "User.h"
+
 template <typename T>
 class Vector
 {
@@ -18,7 +23,8 @@ public:
 	void insert(T&& str, unsigned index);
 	void erase(unsigned index);
 	bool empty() const;
-	void readFromBinary(std::ifstream& ifs, size_t size);
+	void saveToBinary(std::ofstream& ofs) const;
+	void loadFromBinary(std::ifstream& ifs);
 	const T& operator[](size_t) const;
 	T& operator[](size_t);
 	size_t getSize() const;
@@ -235,14 +241,89 @@ bool Vector<T>::empty() const
 }
 
 template<typename T>
-void Vector<T>::readFromBinary(std::ifstream& ifs, size_t size)
+void Vector<T>::saveToBinary(std::ofstream& ofs) const
 {
-	// първо зануляваме вектора, после четем от файла
+	ofs.write(reinterpret_cast<const char*>(&size), sizeof(size_t));
+	ofs.write(reinterpret_cast<const char*>(data), sizeof(T) * size);
+}
+
+template<typename T>
+void Vector<T>::loadFromBinary(std::ifstream& ifs)
+{
 	free();
+	ifs.read(reinterpret_cast<char*>(&size), sizeof(size_t));
 	capacity = roundToPowerOfTwo(size);
 	data = new T[capacity];
-	this->size = size;
 	ifs.read(reinterpret_cast<char*>(data), sizeof(T) * size);
+}
+
+template<>
+inline void Vector<Task>::saveToBinary(std::ofstream& ofs) const
+{
+	ofs.write(reinterpret_cast<const char*>(&size), sizeof(size_t));
+	for (int i = 0; i < size; i++)
+	{
+		data[i].saveToBinary(ofs);
+	}
+}
+
+template<>
+inline void Vector<CollaborationTask>::saveToBinary(std::ofstream& ofs) const
+{
+	ofs.write(reinterpret_cast<const char*>(&size), sizeof(size_t));
+	for (int i = 0; i < size; i++)
+	{
+		data[i].saveToBinary(ofs);
+	}
+}
+
+template<>
+inline void Vector<MyString>::saveToBinary(std::ofstream& ofs) const
+{
+	ofs.write(reinterpret_cast<const char*>(&size), sizeof(size_t));
+	for (int i = 0; i < size; i++)
+	{
+		data[i].saveToBinary(ofs);
+	}
+}
+
+template<>
+inline void Vector<MyString>::loadFromBinary(std::ifstream& ifs)
+{
+	free();
+	ifs.read(reinterpret_cast<char*>(&size), sizeof(size_t));
+	capacity = roundToPowerOfTwo(size);
+	data = new MyString[capacity];
+	for (int i = 0; i < size; i++)
+	{
+		data[i].loadFromBinary(ifs);
+	}
+}
+
+template <>
+inline void Vector<Task>::loadFromBinary(std::ifstream& ifs)
+{
+	free();
+	ifs.read(reinterpret_cast<char*>(&size), sizeof(size_t));
+	capacity = roundToPowerOfTwo(size);
+	data = new Task[capacity];
+	for (int i = 0; i < size; i++)
+	{
+		data[i].loadFromBinary(ifs);
+	}
+}
+
+template <>
+inline void Vector<CollaborationTask>::loadFromBinary(std::ifstream& ifs)
+{
+	free();
+	ifs.read(reinterpret_cast<char*>(&size), sizeof(size_t));
+	capacity = roundToPowerOfTwo(size);
+	data = new CollaborationTask[capacity];
+	for (int i = 0; i < size; i++)
+	{
+		data[i].loadFromBinary(ifs);
+	}
 }
 
 template <typename T>

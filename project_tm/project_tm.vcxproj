@@ -133,14 +133,17 @@
     <ClCompile Include="Command.cpp" />
     <ClCompile Include="DashBoard.cpp" />
     <ClCompile Include="Date.cpp" />
+    <ClCompile Include="ListTasksCommand.cpp" />
     <ClCompile Include="LoginCommand.cpp" />
     <ClCompile Include="MyString.cpp" />
     <ClCompile Include="project_tm.cpp" />
     <ClCompile Include="RegisterCommand.cpp" />
     <ClCompile Include="SimpleTaskPrinter.cpp" />
+    <ClCompile Include="StartTaskCommand.cpp" />
     <ClCompile Include="Task.cpp" />
     <ClCompile Include="TaskManager.cpp" />
     <ClCompile Include="TaskPrinter.cpp" />
+    <ClCompile Include="UpdateTaskDescrCommand.cpp" />
     <ClCompile Include="UpdateTaskNameCommand.cpp" />
     <ClCompile Include="User.cpp" />
   </ItemGroup>
@@ -151,14 +154,17 @@
     <ClInclude Include="Command.h" />
     <ClInclude Include="DashBoard.h" />
     <ClInclude Include="Date.h" />
+    <ClInclude Include="ListTasksCommand.h" />
     <ClInclude Include="LoginCommand.h" />
     <ClInclude Include="MyString.h" />
     <ClInclude Include="Optional.hpp" />
     <ClInclude Include="RegisterCommand.h" />
     <ClInclude Include="SimpleTaskPrinter.h" />
+    <ClInclude Include="StartTaskCommand.h" />
     <ClInclude Include="Task.h" />
     <ClInclude Include="TaskManager.h" />
     <ClInclude Include="TaskPrinter.h" />
+    <ClInclude Include="UpdateTaskDescrCommand.h" />
     <ClInclude Include="UpdateTaskNameCommand.h" />
     <ClInclude Include="User.h" />
     <ClInclude Include="Vector.hpp" />
