@@ -22,3 +22,9 @@ void CollaborationTask::loadFromBinary(std::ifstream& ifs)
     Task::loadFromBinary(ifs);
     assignee.loadFromBinary(ifs);
 }
+
+CollaborationTask::CollaborationTask(unsigned id, MyString&& name, Date&& dueDate, MyString&& desc, MyString&& assignee) : Task(id, std::move(name), std::move(dueDate), std::move(desc))
+{
+    this->assignee = std::move(assignee);
+}
+

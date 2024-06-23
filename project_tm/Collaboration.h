@@ -1,6 +1,5 @@
 #pragma once
 #include "CollaborationTask.h"
-#include "User.h"
 #include "Vector.hpp"
 #include <fstream>
 
@@ -16,10 +15,13 @@ public:
 	const MyString& getCreator() const;
 	const Vector<MyString>& getWorkGroup() const;
 
+	void addUserToWorkGroup(const MyString& username);
+	void addUserToWorkGroup(MyString&& username);
+	void addTask(const CollaborationTask& task);
+	void addTask(CollaborationTask&& task);
 	void saveToBinary(std::ofstream& ofs) const;
 	void loadFromBinary(std::ifstream& ifs);
-
-	Collaboration(const Vector<MyString>& workGroup, const MyString& creator, const Vector<CollaborationTask>& tasks, const MyString& name, unsigned id);
+	int findCollabTaskIndexById(unsigned id) const;
 	Collaboration() = default;
 	Collaboration(unsigned id, const MyString& creator, MyString&& collabName);
 private:
@@ -28,6 +30,5 @@ private:
 	Vector<CollaborationTask> tasks;
 	MyString name;
 	unsigned id = 0;
-
 };
 

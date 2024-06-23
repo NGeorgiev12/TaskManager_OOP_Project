@@ -10,6 +10,8 @@ public:
 
 	void saveToBinary(std::ofstream& ofs) const;
 	void loadFromBinary(std::ifstream& ifs);
+	CollaborationTask(unsigned id, MyString&& name, Date&& dueDate, MyString&& desc, MyString&& assignee);
+	CollaborationTask() = default;
 private:
 	MyString assignee;
 };

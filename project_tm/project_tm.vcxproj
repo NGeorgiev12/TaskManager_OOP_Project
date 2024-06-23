@@ -130,9 +130,12 @@
     <ClCompile Include="AddCollaborationCommand.cpp" />
     <ClCompile Include="AddTaskCommand.cpp" />
     <ClCompile Include="AddTaskToDashBoardCommand.cpp" />
+    <ClCompile Include="AddUserToCollaborationCommand.cpp" />
+    <ClCompile Include="AssignTaskCommand.cpp" />
     <ClCompile Include="Collaboration.cpp" />
     <ClCompile Include="CollaborationTask.cpp" />
     <ClCompile Include="Command.cpp" />
+    <ClCompile Include="CommandFactory.cpp" />
     <ClCompile Include="DashBoard.cpp" />
     <ClCompile Include="Date.cpp" />
     <ClCompile Include="DeleteCollaborationCommand.cpp" />
@@ -163,9 +166,12 @@
     <ClInclude Include="AddCollaborationCommand.h" />
     <ClInclude Include="AddTaskCommand.h" />
     <ClInclude Include="AddTaskToDashBoardCommand.h" />
+    <ClInclude Include="AddUserToCollaborationCommand.h" />
+    <ClInclude Include="AssignTaskCommand.h" />
     <ClInclude Include="Collaboration.h" />
     <ClInclude Include="CollaborationTask.h" />
     <ClInclude Include="Command.h" />
+    <ClInclude Include="CommandFactory.h" />
     <ClInclude Include="DashBoard.h" />
     <ClInclude Include="Date.h" />
     <ClInclude Include="DeleteCollaborationCommand.h" />

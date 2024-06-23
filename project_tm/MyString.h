@@ -29,6 +29,8 @@ public:
     friend std::istream& operator>>(std::istream& is, MyString& ref);
     void saveToBinary(std::ofstream& ofs) const;
     void loadFromBinary(std::ifstream& ifs);
+    MyString substr(unsigned startIndex, unsigned len) const;
+    MyString& operator+=(char ch);
 
 private:
     void resize(unsigned newAllocatedDataSize);

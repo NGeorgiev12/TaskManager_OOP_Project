@@ -140,7 +140,7 @@ std::ostream& operator<<(std::ostream& os, const MyString& obj)
 std::istream& operator>>(std::istream& is, MyString& ref)
 {
     char buff[1024];
-    is >> buff;
+    is.getline(buff, 1024);
     size_t buffStringSize = std::strlen(buff);
 
     if (buffStringSize > ref.getCapacity())
@@ -190,6 +190,28 @@ MyString operator+(const MyString& lhs, const MyString& rhs)
     result += lhs; // no resize is needed
     result += rhs;
     return result;
+}
+
+MyString MyString::substr(unsigned startIndex, unsigned len) const
+{
+    MyString str;
+    for (int i = startIndex; i < startIndex + len; i++)
+    {
+        str += _data[i];
+    }
+    str += '\0';
+    str._size--;
+    return str;
+}
+
+MyString& MyString::operator+=(char ch)
+{
+    if (_size == _allocatedDataSize || _size + 1 == _allocatedDataSize)
+        resize(2 * _allocatedDataSize);
+
+    _data[_size++] = ch;
+    _data[_size] = '\0';
+    return *this;
 }
 
 bool operator==(const MyString& lhs, const MyString& rhs)

@@ -90,6 +90,16 @@ bool User::isTaskInDashBoard(unsigned id) const
     return false;
 }
 
+bool User::isCollabTaskInDashBoard(unsigned id) const
+{
+    for (int i = 0; i < collabTasks.getSize(); i++)
+    {
+        if (collabTasks[i]->getId() == id)
+            return true;
+    }
+    return false;
+}
+
 void User::removeTaskFromDashBoard(unsigned id)
 {
     dashboard.removeTaskId(id);
@@ -104,9 +114,17 @@ void User::deleteTask(unsigned taskId)
         throw std::invalid_argument("There is no such task!");
 
     if (taskIndex != -1)
+    {
         tasks.erase(taskIndex);
+        if (isTaskInDashBoard(tasks[taskIndex].getId()))
+            dashboard.removeTaskId(tasks[taskIndex].getId());
+    }    
     else
+    {
         collabTasks.erase(collabTaskIndex);
+        if (isCollabTaskInDashBoard(collabTasks[collabTaskIndex]->getId()))
+            dashboard.removeTaskId(collabTasks[collabTaskIndex]->getId());
+    }
 }
 
 void User::setTaskStatus(Status status, unsigned taskId)
@@ -126,6 +144,23 @@ void User::setTaskStatus(Status status, unsigned taskId)
 void User::addCollabName(const MyString& collabName)
 {
     collabNames.pushBack(collabName);
+}
+
+void User::removeCollabName(const MyString& collabName)
+{
+    for (int i = 0; i < collabNames.getSize(); i++)
+    {
+        if (collabNames[i] == collabName)
+        {
+            collabNames.erase(i);
+            return;
+        }
+    }
+}
+
+void User::addCollabTaskPtr(CollaborationTask* ptr)
+{
+    collabTasks.pushBack(ptr);
 }
 
 const Vector<Task>& User::getTasks() const

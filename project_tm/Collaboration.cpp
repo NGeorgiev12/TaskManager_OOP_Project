@@ -30,6 +30,26 @@ const Vector<MyString>& Collaboration::getWorkGroup() const
     return workGroup;
 }
 
+void Collaboration::addUserToWorkGroup(const MyString& username)
+{
+    workGroup.pushBack(username);
+}
+
+void Collaboration::addUserToWorkGroup(MyString&& username)
+{
+    workGroup.pushBack(std::move(username));
+}
+
+void Collaboration::addTask(const CollaborationTask& task)
+{
+    tasks.pushBack(task);
+}
+
+void Collaboration::addTask(CollaborationTask&& task)
+{
+    tasks.pushBack(std::move(task));
+}
+
 void Collaboration::saveToBinary(std::ofstream& ofs) const
 {
     workGroup.saveToBinary(ofs);
@@ -48,13 +68,18 @@ void Collaboration::loadFromBinary(std::ifstream& ifs)
     ifs.read(reinterpret_cast<char*>(&id), sizeof(unsigned));
 }
 
-Collaboration::Collaboration(const Vector<MyString>& workGroup, const MyString& creator, const Vector<CollaborationTask>& tasks, const MyString& name, unsigned id)
+int Collaboration::findCollabTaskIndexById(unsigned id) const
 {
-    this->workGroup = workGroup;
-    this->creator = creator;
-    this->tasks = tasks;
-    this->name = name;
-    this->id = id;
+    int index = -1;
+    for (int i = 0; i < tasks.getSize(); i++)
+    {
+        if (tasks[i].getId() == id)
+        {
+            index = i;
+            return index;
+        }
+    }
+    return index;
 }
 
 Collaboration::Collaboration(unsigned id, const MyString& creator, MyString&& collabName)

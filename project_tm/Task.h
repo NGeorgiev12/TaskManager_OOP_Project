@@ -28,12 +28,13 @@ public:
 	void setTaskName(MyString&& newName);
 	void setDescription(const MyString& newDesc);
 	void setDescription(MyString&& newDesc);
-	void setStatus(const Status& newStatus);
+	void setStatus(Status newStatus);
 	void setDate(const Date& date);
 	void setDate(Date&& date);
 
 	//Task(unsigned id, const MyString& name, const Date& timeStr, const MyString& desc);
-	Task(unsigned id, MyString&& name, Optional<Date>&& dueDate, MyString&& desc, Status&& status);
+	Task(unsigned id, MyString&& name, Optional<Date>&& dueDate, MyString&& desc, Status status);
+	Task(unsigned id, MyString&& name, Date&& dueDate, MyString&& desc);
 	Task(unsigned id, const MyString& name, const MyString& desc);
 	Task() = default;
 	bool isDueDateToday() const;

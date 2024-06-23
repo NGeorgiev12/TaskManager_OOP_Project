@@ -3,12 +3,23 @@
 constexpr unsigned INITIAL_ID = 1;
 static unsigned generateNextId(const User& user)
 {
-	if (user.getTasks().empty())
+	if (user.getTasks().empty() && user.getCollabTasksPtrs().empty())
 	{
 		return INITIAL_ID;
 	}
 
-	unsigned lastId = user.getTasks()[user.getTasks().getSize() - 1].getId();
+	unsigned lastTaskId = user.getTasks()[user.getTasks().getSize() - 1].getId();
+	
+	unsigned lastCollabTaskId;
+	if (user.getCollabTasksPtrs().empty())
+		lastCollabTaskId = 0;
+	else
+	{
+		unsigned lastCollabTaskIndex = user.getCollabTasksPtrs().getSize() - 1;
+		lastCollabTaskId = user.getCollabTasksPtrs()[lastCollabTaskIndex]->getId();
+	}
+	
+	unsigned lastId = lastTaskId > lastCollabTaskId ? lastTaskId : lastCollabTaskId;
 	return lastId + 1;
 }
 

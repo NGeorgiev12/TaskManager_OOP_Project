@@ -24,7 +24,7 @@ void AddCollaborationCommand::execute()
 
 	unsigned collabId = generateNextCollabId(taskManager);
 	int userIndex = taskManager.getCurrentUserIndex();
-	MyString user = taskManager.getUsers()[userIndex].getUsername();
+	MyString username = taskManager.getUsers()[userIndex].getUsername();
 	taskManager.addCollabForUser(userIndex, name);
-	taskManager.addCollaboration(Collaboration(collabId, user, std::move(name)));
+	taskManager.addCollaboration(Collaboration(collabId, username, std::move(name)));
 }

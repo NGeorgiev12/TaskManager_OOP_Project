@@ -55,7 +55,7 @@ void Task::setDescription(MyString&& newDesc)
 	description = std::move(newDesc);
 }
 
-void Task::setStatus(const Status& newStatus)
+void Task::setStatus(Status newStatus)
 {
 	status = newStatus;
 }
@@ -70,20 +70,21 @@ void Task::setDate(Date&& date)
 	this->dueDate = std::move(date);
 }
 
-//Task::Task(unsigned id, const MyString& name, const Date& timeStr, const MyString& desc) : dueDate(timeStr)
-//{
-//	setId(id);
-//	setTaskName(name);
-//	setDescription(desc);
-//}
-
-Task::Task(unsigned id, MyString&& name, Optional<Date>&& dueDate, MyString&& desc, Status&& status)
+Task::Task(unsigned id, MyString&& name, Optional<Date>&& dueDate, MyString&& desc, Status status)
 {
 	this->id = id;
 	this->taskName = std::move(name);
 	this->dueDate = std::move(dueDate);
 	this->description = std::move(desc);
-	this->status = std::move(status);
+	this->status = status;
+}
+
+Task::Task(unsigned id, MyString&& name, Date&& dueDate, MyString&& desc)
+{
+	this->id = id;
+	this->taskName = std::move(name);
+	this->dueDate = std::move(dueDate);
+	this->description = std::move(desc);
 }
 
 Task::Task(unsigned id, const MyString& name, const MyString& desc)

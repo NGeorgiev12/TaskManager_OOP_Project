@@ -26,10 +26,13 @@ public:
 	void updateTaskDescription(unsigned id, MyString&& newDescription);
 	void addTaskToDashBoard(unsigned id);
 	bool isTaskInDashBoard(unsigned id) const;
+	bool isCollabTaskInDashBoard(unsigned id) const;
 	void removeTaskFromDashBoard(unsigned id);
 	void deleteTask(unsigned taskId);
 	void setTaskStatus(Status status, unsigned taskId);
 	void addCollabName(const MyString& collabName);
+	void removeCollabName(const MyString& collabName);
+	void addCollabTaskPtr(CollaborationTask* ptr);
 	/*void getTask(const MyString& name);
 	void getTask(int id);
 	void listTasks(const Date& date);
