@@ -10,7 +10,7 @@ class TaskManager
 {
 public:
 	TaskManager() = default;
-	TaskManager(int currentUserIndex, const MyString& name,
+	TaskManager(int currentUserIndex,
 			    const Vector<User>& users, const Vector<Collaboration>& collabs);
 
 	TaskManager(const char* fileName);
@@ -28,6 +28,9 @@ public:
 	bool isTaskInUserDashBoard(int userIndex, unsigned taskId) const;
 	void removeTaskFromUserDashBoard(int userIndex, unsigned taskId);
 	void deleteUserTask(int userIndex, unsigned taskId);
+	void finishUserTask(int userIndex, unsigned taskId);
+	void addCollaboration(Collaboration&& collab);
+	void addCollabForUser(int userIndex, const MyString& collabName);
 	TaskManager(const MyString& name);
 	TaskManager(MyString&& name);
 
@@ -37,10 +40,8 @@ public:
 	void loadFromBinary(std::ifstream& ifs);
 private:
 	int currentUserIndex = -1;
-	MyString name; // name of taskManager
+	const MyString& name = "TaskManager"; // name of taskManager
 	Vector<User> users;
 	Vector<Collaboration> collabs;
-
-	
 };
 

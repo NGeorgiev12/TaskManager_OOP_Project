@@ -70,12 +70,14 @@ void GetTaskCommand::execute()
 		if (isTaskSmallerThanCollab && minIndex < INT32_MAX)
 		{
 			SimpleTaskPrinter::getInstance().print(user.getTasks()[minIndex]);
+			return;
 		}
 		else if (!isTaskSmallerThanCollab && minIndex < INT32_MAX)
 		{
 			SimpleTaskPrinter::getInstance().print(*user.getCollabTasksPtrs()[minIndex]);
+			return;
 		}
-			
 		throw std::invalid_argument("Incorrect taskName!");
 	}
+	
 }

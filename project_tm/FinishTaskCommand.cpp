@@ -11,5 +11,6 @@ void FinishTaskCommand::execute()
 		throw std::invalid_argument("You need to login first!");
 
 	int userIndex = taskManager.getCurrentUserIndex();
-
+	taskManager.finishUserTask(userIndex, taskId);
+	std::cout << "Congratulations on completing the task!\n";
 }

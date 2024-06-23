@@ -170,9 +170,9 @@ void Vector<T>::erase(unsigned index)
 	if (index >= size)
 		throw std::invalid_argument("Out of bounds");
 
-	for (unsigned i = index; i < size; i++)
+	for (unsigned i = index; i < size - 1; i++)
 	{
-		data[i + 1] = data[i];
+		data[i] = data[i + 1];
 	}
 	size--;
 }

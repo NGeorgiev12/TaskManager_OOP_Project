@@ -19,10 +19,24 @@
 #include "DeleteTaskCommand.h"
 #include "GetTaskCommand.h"
 #include "ListCompletedTasksCommand.h"
+#include "FinishTaskCommand.h"
+#include "ExitCommand.h"
+#include "AddCollaborationCommand.h"
+#include "ListCollaborationCommand.h"
 
 int main()
 {
 	
+	TaskManager tm3("TaskManager.dat");
+
+	Command* cmd = new LoginCommand(tm3, "Niki", "123");
+	cmd->execute();
+
+	Command* cmd15 = new AddCollaborationCommand(tm3, "FirstCollab");
+	cmd15->execute();
+
+	Command* cmd16 = new ListCollaborationCommand(tm3);
+	cmd16->execute();
 	/*TaskManager tm;
 	Command* cmd = new RegisterCommand(tm, "Niki", "123");
 	cmd->execute();
@@ -31,7 +45,7 @@ int main()
 	//std::ofstream ofs("TaskMan1.dat", std::ios::binary | std::ios::out);
 	//tm2.saveToBinary(ofs);
 
-	TaskManager tm2;
+	/*TaskManager tm2;
 
 	Command* cmd0 = new RegisterCommand(tm2, "Niki", "123");
 	cmd0->execute();
@@ -44,8 +58,29 @@ int main()
 	Command* cmd1 = new AddTaskCommand(tm2, "Task1!", Date("2024-06-23"), "Obeli kartofite.");
 	cmd1 -> execute();
 
-	Command* cmd10 = new GetTaskCommand(tm2, "Task");
-	cmd10->execute();
+	Command* cmd4 = new StartTaskCommand(tm2, 1);
+	cmd4->execute();
+
+	Command* cmd3 = new UpdateTaskNameCommand(tm2, 1, "TaskPesho");
+	cmd3->execute();
+
+	Command* cmd5 = new UpdateTaskDescrCommand(tm2, 1, "Obeli patladganite");
+	cmd5->execute();
+
+	Command* cmd10 = new GetTaskCommand(tm2, 1);
+	cmd10->execute();*/
+
+	/*Command* cmd12 = new FinishTaskCommand(tm2, 1);
+	cmd12->execute();*/
+
+	/*cmd10->execute();
+
+	Command* cmd13 = new ExitCommand(tm2);
+	cmd13->execute();
+
+	Command* cmd14 = new AddCollaborationCommand(tm2, "FirstCollab");
+	cmd14->execute();*/
+
 	/*Command* cmd6 = new AddTaskToDashBoardCommand(tm2, 1);
 	cmd6->execute();
 
@@ -61,16 +96,13 @@ int main()
 	/*Command* cmd2 = new ListTasksCommand(tm2);
 	cmd2->execute();*/
 
-	/*Command* cmd3 = new UpdateTaskNameCommand(tm2, 1, "TaskPesho");
-	cmd3->execute();*/
 	
 	
-	/*Command* cmd4 = new StartTaskCommand(tm2, 1);
-	cmd4->execute();*/
+	
+	
 
-	/*Command* cmd5 = new UpdateTaskDescrCommand(tm2, 1, "Obeli patladganite");
-	cmd5->execute();
-	cmd2->execute();*/
+	
+	//cmd2->execute();
 	////Task task;
 	/////*task.setDate(MyString("2020-12-12"));
 	////task.setDescription(MyString("task 1 description"));

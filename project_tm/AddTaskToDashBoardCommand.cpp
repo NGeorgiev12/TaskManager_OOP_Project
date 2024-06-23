@@ -12,7 +12,7 @@ void AddTaskToDashBoardCommand::execute()
 
 	int userIndex = taskManager.getCurrentUserIndex();
 
-	const User& user = taskManager.getUsers()[taskManager.getCurrentUserIndex()];
+	const User& user = taskManager.getUsers()[userIndex];
 
 	for (int i = 0; i < user.getTasks().getSize(); i++)
 	{

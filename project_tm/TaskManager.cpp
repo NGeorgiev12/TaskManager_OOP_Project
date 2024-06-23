@@ -21,14 +21,12 @@ static void SetUserCollabTasks(User& user, Vector<Collaboration>& collabs)
 	}
 }
 
-TaskManager::TaskManager(int currentUserIndex, const MyString& name, const Vector<User>& users, const Vector<Collaboration>& collabs)
+TaskManager::TaskManager(int currentUserIndex, const Vector<User>& users, const Vector<Collaboration>& collabs)
 {
 	this->currentUserIndex = currentUserIndex;
 	this->users = users;
-	this->name = name;
 	this->collabs = collabs;
 }
-
 
 TaskManager::TaskManager(const char* fileName)
 {
@@ -39,7 +37,7 @@ TaskManager::TaskManager(const char* fileName)
 	{
 		throw std::runtime_error("Cannot open stream!");
 	}
-
+	
 	loadFromBinary(ifs);
 }
 
@@ -80,7 +78,7 @@ void TaskManager::updateTaskNameOfUser(int userIndex, unsigned taskIndex, MyStri
 
 void TaskManager::startTaskOfUser(int userIndex, unsigned taskId)
 {
-	users[userIndex].startTask(taskId);
+	users[userIndex].setTaskStatus(Status::IN_PROCESS, taskId);
 }
 
 void TaskManager::updateTaskDescrOfUser(int userIndex, unsigned taskId, MyString&& newDesc)
@@ -108,15 +106,20 @@ void TaskManager::deleteUserTask(int userIndex, unsigned taskId)
 	users[userIndex].deleteTask(taskId);
 }
 
-//const Optional<User>& TaskManager::getUser() const
-//{
-//	return currentUser;
-//}
-//
-//void TaskManager::setUserTask(Task&& task)
-//{
-//	(*currentUser).addTask(std::move(task));
-//}
+void TaskManager::finishUserTask(int userIndex, unsigned taskId)
+{
+	users[userIndex].setTaskStatus(Status::DONE, taskId);
+}
+
+void TaskManager::addCollaboration(Collaboration&& collab)
+{
+	collabs.pushBack(collab);
+}
+
+void TaskManager::addCollabForUser(int userIndex, const MyString& collabName)
+{
+	users[userIndex].addCollabName(collabName);
+}
 
 TaskManager::TaskManager(const MyString& name) : name(name)
 {
@@ -134,7 +137,6 @@ void TaskManager::addUser(User&& user)
 void TaskManager::saveToBinary(std::ofstream& ofs) const
 {
 	ofs.write(reinterpret_cast<const char*>(&currentUserIndex), sizeof(int));
-	name.saveToBinary(ofs);
 
 	size_t collabsCount = collabs.getSize();
 	ofs.write(reinterpret_cast<const char*>(&collabsCount), sizeof(size_t));
@@ -155,7 +157,6 @@ void TaskManager::saveToBinary(std::ofstream& ofs) const
 void TaskManager::loadFromBinary(std::ifstream& ifs)
 {
 	ifs.read(reinterpret_cast<char*>(&currentUserIndex), sizeof(int));
-	name.loadFromBinary(ifs);
 
 	size_t collabsCount = 0;
 	ifs.read(reinterpret_cast<char*>(&collabsCount), sizeof(size_t));

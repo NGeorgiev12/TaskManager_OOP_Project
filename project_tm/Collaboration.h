@@ -21,6 +21,7 @@ public:
 
 	Collaboration(const Vector<MyString>& workGroup, const MyString& creator, const Vector<CollaborationTask>& tasks, const MyString& name, unsigned id);
 	Collaboration() = default;
+	Collaboration(unsigned id, const MyString& creator, MyString&& collabName);
 private:
 	Vector<MyString> workGroup;
 	MyString creator;

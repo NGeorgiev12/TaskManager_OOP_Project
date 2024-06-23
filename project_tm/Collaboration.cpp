@@ -56,3 +56,10 @@ Collaboration::Collaboration(const Vector<MyString>& workGroup, const MyString& 
     this->name = name;
     this->id = id;
 }
+
+Collaboration::Collaboration(unsigned id, const MyString& creator, MyString&& collabName)
+{
+    this->id = id;
+    this->creator = creator;
+    name = std::move(collabName);
+}

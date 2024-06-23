@@ -48,21 +48,31 @@ void User::addTask(Task&& task)
 
 void User::updateTaskName(unsigned id, MyString&& newName)
 {
-    unsigned index = findTaskIndexById(id);
-    tasks[index].setTaskName(std::move(newName));
-}
+    int taskIndex = findTaskIndexById(id);
+    int collabTaskIndex = findCollabTaskIndexById(id);
 
-void User::startTask(unsigned id)
-{
-    unsigned index = findTaskIndexById(id);
-    tasks[index].setStatus(Status::IN_PROCESS); 
-    // to do-sushtoto i ot kolaboraciqta
+    if (taskIndex == -1 && collabTaskIndex == -1)
+        throw std::invalid_argument("There is no such task!");
+
+    if (taskIndex != -1)
+        tasks[taskIndex].setTaskName(std::move(newName));
+    else
+        collabTasks[collabTaskIndex]->setTaskName(std::move(newName));
+    
 }
 
 void User::updateTaskDescription(unsigned id, MyString&& newDescription)
 {
-    unsigned index = findTaskIndexById(id);
-    tasks[index].setDescription(std::move(newDescription));
+    int taskIndex = findTaskIndexById(id);
+    int collabTaskIndex = findCollabTaskIndexById(id);
+
+    if (taskIndex == -1 && collabTaskIndex == -1)
+        throw std::invalid_argument("There is no such task!");
+
+    if (taskIndex != -1)
+        tasks[taskIndex].setDescription(std::move(newDescription));
+    else
+        collabTasks[collabTaskIndex]->setDescription(std::move(newDescription));
 }
 
 void User::addTaskToDashBoard(unsigned id)
@@ -87,16 +97,36 @@ void User::removeTaskFromDashBoard(unsigned id)
 
 void User::deleteTask(unsigned taskId)
 {
-    unsigned taskIndex = findTaskIndexById(taskId);
-    tasks.erase(taskIndex);
+    int taskIndex = findTaskIndexById(taskId);
+    int collabTaskIndex = findCollabTaskIndexById(taskId);
+
+    if (taskIndex == -1 && collabTaskIndex == -1)
+        throw std::invalid_argument("There is no such task!");
+
+    if (taskIndex != -1)
+        tasks.erase(taskIndex);
+    else
+        collabTasks.erase(collabTaskIndex);
 }
 
 void User::setTaskStatus(Status status, unsigned taskId)
 {
-    unsigned taskIndex = findTaskIndexById(taskId);
-    tasks[taskIndex].setStatus(status);
+    int taskIndex = findTaskIndexById(taskId);
+    int collabTaskIndex = findCollabTaskIndexById(taskId);
+
+    if (taskIndex == -1 && collabTaskIndex == -1)
+        throw std::invalid_argument("There is no such task!");
+
+    if (taskIndex != -1)
+        tasks[taskIndex].setStatus(status);
+    else
+        collabTasks[collabTaskIndex]->setStatus(status);
 }
 
+void User::addCollabName(const MyString& collabName)
+{
+    collabNames.pushBack(collabName);
+}
 
 const Vector<Task>& User::getTasks() const
 {
@@ -105,7 +135,7 @@ const Vector<Task>& User::getTasks() const
 
 const Vector<MyString>& User::getCollabNames() const
 {
-    return collabTaskNames;
+    return collabNames;
 }
 
 const Vector<CollaborationTask*>& User::getCollabTasksPtrs() const
@@ -119,38 +149,7 @@ void User::saveUserInBinary(std::ofstream& ofs) const
     password.saveToBinary(ofs);
     dashboard.saveToBinary(ofs);
     tasks.saveToBinary(ofs);
-    collabTaskNames.saveToBinary(ofs);
-}
-
-void User::createDashBoard()
-{
-    if (dashboard.getCurrentDate() != getToday())
-    {
-        for (int i = 0; i < dashboard.getTaskIds().getSize(); i++)
-        {
-            setTaskStatus(dashboard.getTaskIds()[i], Status::OVERDUE);
-        }
-
-        dashboard.freeTaskIds();
-        for (int i = 0; i < tasks.getSize(); i++)
-        {
-            if (tasks[i].isDueDateToday())
-                dashboard.addTaskId(tasks[i].getId());
-        }
-
-        for (int i = 0; i < collabTasks.getSize(); i++)
-        {
-            if (collabTasks[i]->getDueDate() == getToday())
-                dashboard.addTaskId(collabTasks[i]->getId());
-            // priemame nagotovo che id-tata sa razlichni
-        }
-    }
-}
-
-void User::setTaskStatus(unsigned taskId, Status status)
-{
-    unsigned taskIndex = findTaskIndexById(taskId);
-    tasks[taskIndex].setStatus(status);
+    collabNames.saveToBinary(ofs);
 }
 
 void User::loadUserFromBinary(std::ifstream& ifs)
@@ -171,18 +170,17 @@ void User::loadUserFromBinary(std::ifstream& ifs)
         }
     }
         
-
     tasks.loadFromBinary(ifs);
-    collabTaskNames.loadFromBinary(ifs);
+    collabNames.loadFromBinary(ifs);
 }
 
-User::User(const MyString& username, const MyString& password, const DashBoard& dashboard, const Vector<Task>& tasks, const Vector<MyString> collabTaskNames) : dashboard(dashboard)
+User::User(const MyString& username, const MyString& password, const DashBoard& dashboard, const Vector<Task>& tasks, const Vector<MyString> collabNames) : dashboard(dashboard)
 {
     this->username = username;
     this->password = password;
 
     this->tasks = tasks;
-    this->collabTaskNames = collabTaskNames;
+    this->collabNames = collabNames;
 }
 
 User::User(MyString&& username, MyString&& password)
@@ -211,96 +209,60 @@ bool User::isCollabIdUnique(unsigned id) const
     return true;
 }
 
-unsigned User::findTaskIndexById(int id) const
+int User::findTaskIndexById(unsigned id) const
 {
+    int index = -1;
     for (int i = 0; i < tasks.getSize(); i++)
     {
         if (tasks[i].getId() == id)
-            return i;
+
+        {
+            index = i;
+            return index;
+        }
     }
 
-    throw std::invalid_argument("There is no such task!");
+    return index;
 }
 
-//void User::deleteTask(int id)
-//{
-//	if (isIdUnique(id))
-//		throw std::invalid_argument("User::deleteTask There is no such taskId");
-//
-//	int taskIndex = findTaskIndexById(id);
-//	tasks.erase(taskIndex);
-//	regulateId();
-//}
+int User::findCollabTaskIndexById(unsigned id) const
+{
+    // приемаме, че id-тата са различни от тези, които не са в колаборации
+    int index = -1;
+    for (int i = 0; i < collabTasks.getSize(); i++)
+    {
+        if (collabTasks[i]->getId() == id)
+        {
+            index = i;
+            return index;
+        }
+            
+    }
 
-//void User::getTask(const MyString& name)
-//{
-//	for (int i = 0; i < tasks.getSize(); i++)
-//	{
-//		if (tasks[i].getTaskName() == name)
-//		{
-//			printTask(tasks[i]);
-//			return;
-//			// id-тата нарастват последователно => ще се печата първото
-//		}
-//	}
-//
-//	throw std::invalid_argument("User::getTask Invalid taskName");
-//}
+    return index;
+}
 
-//void User::getTask(int id)
-//{
-//	if (isIdUnique(id))
-//		throw std::invalid_argument("User::getTaskById There is no such taskId");
-//
-//	int taskIndex = findTaskIndexById(id);
-//	printTask(tasks[taskIndex]);
-//}
+void User::createDashBoard()
+{
+    if (dashboard.getCurrentDate() != getToday())
+    {
+        for (int i = 0; i < dashboard.getTaskIds().getSize(); i++)
+        {
+            setTaskStatus(Status::OVERDUE, dashboard.getTaskIds()[i]);
 
-//void User::listTasks(const Date& date)
-//{
-//	for (int i = 0; i < tasks.getSize(); i++)
-//	{
-//		if (tasks[i].getDueDate() == date)
-//			printTask(tasks[i]);
-//	}
-//}
+            dashboard.freeTaskIds();
+            for (int i = 0; i < tasks.getSize(); i++)
+            {
+                if (tasks[i].isDueDateToday())
+                    dashboard.addTaskId(tasks[i].getId());
+            }
 
-//void User::listTasks()
-//{
-//	for (int i = 0; i < tasks.getSize(); i++)
-//	{
-//		printTask(tasks[i]);
-//	}
-//}
-
-//void User::listCompletedTasks()
-//{
-//	for (int i = 0; i < tasks.getSize(); i++)
-//	{
-//		if (tasks[i].getStatus() == Status::DONE)
-//			printTask(tasks[i]);
-//	}
-//}
-
-//void User::finishTask(int id)
-//{
-//	int taskIndex = findTaskIndexById(id);
-//	tasks[taskIndex].setStatus(Status::DONE);
-//}
-
-//
-//void User::regulateId()
-//{
-//	if (tasks[0].getId() == MAX_INITIAL_ID)
-//	{
-//		for (int i = 0; i < tasks.getSize(); i++)
-//		{
-//			int newId = tasks[i].getId() - MAX_INITIAL_ID + 1;
-//			tasks[i].setId(newId);
-//		}
-//	}
-//		
-//}
-
-
-
+            for (int i = 0; i < collabTasks.getSize(); i++)
+            {
+                if (collabTasks[i]->getDueDate() == getToday())
+                    dashboard.addTaskId(collabTasks[i]->getId());
+                // priemame nagotovo che id-tata sa razlichni
+            }
+        }
+    }
+}

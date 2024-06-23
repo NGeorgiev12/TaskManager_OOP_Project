@@ -8,7 +8,7 @@ RegisterCommand::RegisterCommand(TaskManager& taskManager, MyString&& username, 
 
 void RegisterCommand::execute()
 {
-	for (int i = 0; i <taskManager.getUsers().getSize(); i++)
+	for (int i = 0; i < taskManager.getUsers().getSize(); i++)
 	{
 		
 		if (taskManager.getUsers()[i].getUsername() == username)
