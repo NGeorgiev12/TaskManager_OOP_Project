@@ -27,4 +27,6 @@ void AddCollaborationCommand::execute()
 	MyString username = taskManager.getUsers()[userIndex].getUsername();
 	taskManager.addCollabForUser(userIndex, name);
 	taskManager.addCollaboration(Collaboration(collabId, username, std::move(name)));
+	std::cout << "Collaboration added successfully!" << '\n';
+
 }

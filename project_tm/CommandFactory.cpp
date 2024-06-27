@@ -15,6 +15,11 @@
 #include "FinishTaskCommand.h"
 #include "LogoutCommand.h"
 #include "ExitCommand.h"
+#include "AddCollaborationCommand.h"
+#include "DeleteCollaborationCommand.h"
+#include "ListCollaborationCommand.h"
+#include "AddUserToCollaborationCommand.h"
+#include "AssignTaskCommand.h"
 #pragma warning (disable:4996)
 
 const char* registerCommand = "register";
@@ -65,6 +70,21 @@ const size_t logoutCommandSize = 6;
 const char* exitCommand = "exit";
 const size_t exitCommandSize = 4;
 
+const char* addCollaborationCommand = "add-collaboration";
+const size_t addCollaborationCommandSize = 17;
+
+const char* deleteCollaborationCommand = "delete-collaboration";
+const size_t deleteCollaborationCommandSize = 20;
+
+const char* listCollaborationsCommand = "list-collaborations";
+const size_t listCollaborationsCommandSize = 19;
+
+const char* addUserToCollaborationCommand = "add-user";
+const size_t addUserToCollaborationCommandSize = 8;
+
+const char* assignTaskCommand = "assign-task";
+const size_t assignTaskCommandSize = 11;
+
 enum class CommandType
 {
     REGISTER,
@@ -82,7 +102,12 @@ enum class CommandType
     LIST_COMPLETED_TASKS,
     FINISH_TASK,
     LOGOUT,
-    EXIT
+    EXIT,
+    ADD_COLLABORATION,
+    DELETE_COLLABORATION,
+    LIST_COLLABORATIONS,
+    ADD_USER,
+    ASSIGN_TASK
 };
 
 static bool isDigit(char ch)
@@ -166,6 +191,26 @@ static CommandType identifyCommand(const MyString& str)
     else if (str.substr(0, exitCommandSize) == exitCommand)
     {
         return CommandType::EXIT;
+    }
+    else if (str.substr(0, addCollaborationCommandSize) == addCollaborationCommand)
+    {
+        return CommandType::ADD_COLLABORATION;
+    }
+    else if (str.substr(0, deleteCollaborationCommandSize) == deleteCollaborationCommand)
+    {
+        return CommandType::DELETE_COLLABORATION;
+    }
+    else if (str.substr(0, listCollaborationsCommandSize) == listCollaborationsCommand)
+    {
+        return CommandType::LIST_COLLABORATIONS;
+    }
+    else if (str.substr(0, addUserToCollaborationCommandSize) == addUserToCollaborationCommand)
+    {
+        return CommandType::ADD_USER;
+    }
+    else if (str.substr(0, assignTaskCommandSize) == assignTaskCommand)
+    {
+        return CommandType::ASSIGN_TASK;
     }
 }
 
@@ -402,6 +447,86 @@ static Command* makeExitCommand(TaskManager& tm, const MyString& str)
 {
     return new ExitCommand(tm);
 }
+
+static Command* makeAddCollaborationCommand(TaskManager& tm, const MyString& str)
+{
+    MyString collabName;
+    unsigned index = 0;
+    while (index < str.getSize())
+    {
+        collabName += str[index++];
+    }
+
+    return new AddCollaborationCommand(tm, std::move(collabName));
+}
+
+static Command* makeListCollaborationCommand(TaskManager& tm, const MyString& str)
+{
+    return new ListCollaborationCommand(tm);
+}
+
+static Command* makeAddUserCommand(TaskManager& tm, const MyString& str)
+{
+    MyString collabName;
+    MyString username;
+
+    unsigned index = 0;
+    while (str[index] != ' ')
+    {
+        collabName += str[index++];
+    }
+    index++;
+
+    while (index < str.getSize())
+    {
+        username += str[index++];
+    }
+
+    return new AddUserToCollaborationCommand(tm, std::move(collabName), std::move(username));
+
+}
+
+static Command* makeAssignTaskCommand(TaskManager& tm, const MyString& str)
+{
+    MyString collabName;
+    MyString username;
+    MyString taskName;
+    MyString dueDate;
+    MyString description;
+
+    unsigned index = 0;
+    while (str[index] != ' ')
+    {
+        collabName += str[index++];
+    }
+    index++;
+
+    while (str[index] != ' ')
+    {
+        username += str[index++];
+    }
+    index++;
+
+    while (str[index] != ' ')
+    {
+        taskName += str[index++];
+    }
+    index++;
+
+    while (str[index] != ' ')
+    {
+        dueDate += str[index++];
+    }
+    index++;
+
+    while (index < str.getSize())
+    {
+        description += str[index++];
+    }
+
+    return new AssignTaskCommand(tm, std::move(collabName), std::move(username), std::move(taskName), Date(std::move(dueDate)), std::move(description));
+}
+
 Command* CommandFactory::makeCommand(TaskManager& tm, const MyString& str)
 {
     CommandType type;
@@ -472,6 +597,22 @@ Command* CommandFactory::makeCommand(TaskManager& tm, const MyString& str)
         case CommandType::EXIT:
         {
             return makeExitCommand(tm, str.substr(exitCommandSize, str.getSize() - exitCommandSize));
+        }
+        case CommandType::ADD_COLLABORATION:
+        {
+            return makeAddCollaborationCommand(tm, str.substr(addCollaborationCommandSize + 1, str.getSize() - addCollaborationCommandSize + 1));
+        }
+        case CommandType::LIST_COLLABORATIONS:
+        {
+            return makeListCollaborationCommand(tm, str.substr(listCollaborationsCommandSize, str.getSize() - listCollaborationsCommandSize));
+        }
+        case CommandType::ADD_USER:
+        {
+            return makeAddUserCommand(tm, str.substr(addUserToCollaborationCommandSize + 1, str.getSize() - addUserToCollaborationCommandSize + 1));
+        }
+        case CommandType::ASSIGN_TASK:
+        {
+            return makeAssignTaskCommand(tm, str.substr(assignTaskCommandSize + 1, str.getSize() - assignTaskCommandSize + 1));
         }
     }
 }

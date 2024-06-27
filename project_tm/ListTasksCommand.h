@@ -8,5 +8,6 @@ public:
 	void execute() override;
 private:
 	Optional<Date> dueDate;
+	MyString collabName;
 };
 

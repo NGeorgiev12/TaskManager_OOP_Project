@@ -8,6 +8,7 @@
 class User
 {
 public:
+	// getters
 	const MyString& getUsername() const;
 	const MyString& getPassword() const;
 	const DashBoard& getDashBoard() const;
@@ -15,40 +16,41 @@ public:
 	const Vector<MyString>& getCollabNames() const;
 	const Vector<CollaborationTask*>& getCollabTasksPtrs() const;
 
+	// setters
 	void setUsername(const MyString& newUsername);
 	void setPassword(const MyString& newPassword);
-	void addCollaborationTask(CollaborationTask* task);
 
+	// constructors
 	User() = default;
+	User(MyString&& username, MyString&& password);
+	User(const MyString& username, const MyString& password);
 
+	// add functions
+	void addCollaborationTask(CollaborationTask* task);
 	void addTask(Task&& task);
+	void addTaskToDashBoard(unsigned id);
+	void addCollabName(const MyString& collabName);
+	void addCollabTaskPtr(CollaborationTask* ptr, unsigned collabTaskId);
+
+	// remove functions
+	void deleteTask(unsigned taskId);
+	void removeCollabName(const MyString& collabName);
+	void removeTaskFromDashBoard(unsigned id);
+
+	// modify functions
 	void updateTaskName(unsigned id, MyString&& newName);
 	void updateTaskDescription(unsigned id, MyString&& newDescription);
-	void addTaskToDashBoard(unsigned id);
+	void setTaskStatus(Status status, unsigned taskId);
+
+	// const functions
 	bool isTaskInDashBoard(unsigned id) const;
 	bool isCollabTaskInDashBoard(unsigned id) const;
-	void removeTaskFromDashBoard(unsigned id);
-	void deleteTask(unsigned taskId);
-	void setTaskStatus(Status status, unsigned taskId);
-	void addCollabName(const MyString& collabName);
-	void removeCollabName(const MyString& collabName);
-	void addCollabTaskPtr(CollaborationTask* ptr);
-	/*void getTask(const MyString& name);
-	void getTask(int id);
-	void listTasks(const Date& date);
-	void listTasks();
-	void listCompletedTasks();
-	void listDashboard();*/
-	//void finishTask(int id);
-	/*void registerUser(const MyString& username, const MyString& password);
-	void loginUser(const MyString& username, const MyString& password);*/
-	//Task& getTaskById(unsigned id);
+	
+	// file reader and writer
 	void saveUserInBinary(std::ofstream& ofs) const;
 	void loadUserFromBinary(std::ifstream& ifs);
 
-	User(const MyString& username, const MyString& password, const DashBoard& dashboard,
-		const Vector<Task>& tasks, const Vector<MyString> collabTaskNames);
-	User(MyString&& username, MyString&& password);
+
 
 private:
 	MyString username;
@@ -66,6 +68,7 @@ private:
 	//void modifyDashboard();
 	bool isIdUnique(unsigned id) const;
 	bool isCollabIdUnique(unsigned id) const;
+	bool isCollabNameUnique(const MyString& collabName) const;
 	int findTaskIndexById(unsigned id) const;
 	int findCollabTaskIndexById(unsigned id) const;
 	void createDashBoard();

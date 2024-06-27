@@ -137,17 +137,15 @@ void TaskManager::removeCollabNameForUser(int userIndex, const MyString& collabN
 }
 
 void TaskManager::addUserToCollabWorkGroup(const MyString& collabName, MyString&& username)
-{
+{	
 	int collabIndex = findCollabIndexByName(collabName);
-	collabs[collabIndex].addUserToWorkGroup(std::move(username));
-}
+	if (!isUserInCollaboration(username, collabs[collabIndex]))
+	{
+		collabs[collabIndex].addUserToWorkGroup(std::move(username));
 
-TaskManager::TaskManager(const MyString& name) : name(name)
-{
-}
-
-TaskManager::TaskManager(MyString&& name) : name(std::move(name))
-{
+	}
+	else
+		throw std::invalid_argument("User is already in the collaboration!");
 }
 
 void TaskManager::addUser(User&& user)
@@ -171,20 +169,21 @@ void TaskManager::addCollabTask(CollaborationTask&& task, const MyString& collab
 	collabs[collabIndex].addTask(std::move(task));
 }
 
-void TaskManager::addCollabPtrToUser(int userIndex, CollaborationTask* ptr)
+void TaskManager::addCollabPtrToUser(int userIndex, CollaborationTask* ptr, unsigned collabTaskId)
 {
-	users[userIndex].addCollabTaskPtr(ptr);
+	users[userIndex].addCollabTaskPtr(ptr, collabTaskId);
+}
+
+const CollaborationTask* TaskManager::getCollabTaskPtr(int collabIndex, unsigned taskId) const
+{
+	int taskIndex = collabs[collabIndex].findCollabTaskIndexById(taskId);
+	return collabs[collabIndex].getCollTaskPtr(taskIndex);
 }
 
 CollaborationTask* TaskManager::getCollabTaskPtr(int collabIndex, unsigned taskId)
 {
 	int taskIndex = collabs[collabIndex].findCollabTaskIndexById(taskId);
 	return collabs[collabIndex].getCollTaskPtr(taskIndex);
-}
-
-void TaskManager::setUserCollabTaskPtr(int userIndex, CollaborationTask* ptr)
-{
-	users[userIndex].addCollabTaskPtr(ptr);
 }
 
 void TaskManager::saveToBinary(std::ofstream& ofs) const
@@ -230,10 +229,8 @@ void TaskManager::loadFromBinary(std::ifstream& ifs)
 
 		user.loadUserFromBinary(ifs);
 
-		// to do - da vzemem ukazateli ot kolaboraciqta
 		SetUserCollabTasks(user, collabs);
 		users.pushBack(std::move(user));
-
 	}
 }
 
@@ -243,6 +240,20 @@ int TaskManager::findCollabIndexByName(const MyString& collabName) const
 	for (int i = 0; i < collabs.getSize(); i++)
 	{
 		if (collabs[i].getName() == collabName)
+		{
+			index = i;
+			return index;
+		}
+	}
+	return index;
+}
+
+int TaskManager::findUserIndexByUsername(const MyString& username) const
+{
+	int index = -1;
+	for (int i = 0; i < users.getSize(); i++)
+	{
+		if (users[i].getUsername() == username)
 		{
 			index = i;
 			return index;

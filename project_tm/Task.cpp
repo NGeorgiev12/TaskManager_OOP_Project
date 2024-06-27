@@ -155,6 +155,3 @@ void Task::loadFromBinary(std::ifstream& ifs)
 	
 	description.loadFromBinary(ifs);
 }
-
-
-

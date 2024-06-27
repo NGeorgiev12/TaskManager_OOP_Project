@@ -10,6 +10,7 @@ static Date getToday()
     currentDay.setDay(now->tm_mday);
     return currentDay;
 }
+
 const MyString& User::getUsername() const
 {
     return username;
@@ -143,6 +144,8 @@ void User::setTaskStatus(Status status, unsigned taskId)
 
 void User::addCollabName(const MyString& collabName)
 {
+    if (!isCollabNameUnique(collabName))
+        throw std::invalid_argument("There is already collaboration with this name!");
     collabNames.pushBack(collabName);
 }
 
@@ -156,11 +159,14 @@ void User::removeCollabName(const MyString& collabName)
             return;
         }
     }
+
+    throw std::invalid_argument("There is no collab with this name");
 }
 
-void User::addCollabTaskPtr(CollaborationTask* ptr)
+void User::addCollabTaskPtr(CollaborationTask* ptr, unsigned collabTaskId)
 {
     collabTasks.pushBack(ptr);
+    setTaskStatus(Status::ON_HOLD, collabTaskId);
 }
 
 const Vector<Task>& User::getTasks() const
@@ -209,19 +215,12 @@ void User::loadUserFromBinary(std::ifstream& ifs)
     collabNames.loadFromBinary(ifs);
 }
 
-User::User(const MyString& username, const MyString& password, const DashBoard& dashboard, const Vector<Task>& tasks, const Vector<MyString> collabNames) : dashboard(dashboard)
+User::User(MyString&& username, MyString&& password) : username(std::move(username)), password(std::move(password))
 {
-    this->username = username;
-    this->password = password;
-
-    this->tasks = tasks;
-    this->collabNames = collabNames;
 }
 
-User::User(MyString&& username, MyString&& password)
+User::User(const MyString& username, const MyString& password) : username(username), password(password)
 {
-    this->username = std::move(username);
-    this->password = std::move(password);
 }
 
 bool User::isIdUnique(unsigned id) const
@@ -239,6 +238,16 @@ bool User::isCollabIdUnique(unsigned id) const
     for (int i = 0; i < collabTasks.getSize(); i++)
     {
         if (collabTasks[i]->getId() == id)
+            return false;
+    }
+    return true;
+}
+
+bool User::isCollabNameUnique(const MyString& collabName) const
+{
+    for (int i = 0; i < collabNames.getSize(); i++)
+    {
+        if (collabNames[i] == collabName)
             return false;
     }
     return true;

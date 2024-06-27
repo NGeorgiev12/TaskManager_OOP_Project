@@ -15,6 +15,11 @@ const Vector<CollaborationTask>& Collaboration::getTasks() const
     return tasks;
 }
 
+const CollaborationTask* Collaboration::getCollTaskPtr(unsigned index) const
+{
+    return &tasks[index];
+}
+
 CollaborationTask* Collaboration::getCollTaskPtr(unsigned index)
 {
     return &tasks[index];
