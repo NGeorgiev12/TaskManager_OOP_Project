@@ -3,9 +3,9 @@
 class DeleteCollaborationCommand : public Command
 {
 public:
-	DeleteCollaborationCommand(TaskManager& taskManager, MyString&& name);
+	DeleteCollaborationCommand(TaskManager& taskManager, MyString&& collabName);
 	void execute() override;
 private:
-	MyString name;
+	MyString collabName;
 };
 

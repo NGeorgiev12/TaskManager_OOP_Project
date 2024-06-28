@@ -35,6 +35,7 @@ public:
 	// remove functions
 	void deleteTask(unsigned taskId);
 	void removeCollabName(const MyString& collabName);
+	void removeCollabPtr(unsigned collabTaskId);
 	void removeTaskFromDashBoard(unsigned id);
 
 	// modify functions
@@ -49,7 +50,8 @@ public:
 	// file reader and writer
 	void saveUserInBinary(std::ofstream& ofs) const;
 	void loadUserFromBinary(std::ifstream& ifs);
-
+	
+	void createDashBoard();
 
 
 private:
@@ -62,16 +64,13 @@ private:
 	Vector<CollaborationTask*> collabTasks;
 	//указателите сочат към вече заделена памет => не се нуждаем от голяма 6ца
 	// class Collaboration е отговорен за тази памет
-	/*
-	void printTask(const Task& task) const;
-	void regulateId();*/
-	//void modifyDashboard();
+	
 	bool isIdUnique(unsigned id) const;
 	bool isCollabIdUnique(unsigned id) const;
 	bool isCollabNameUnique(const MyString& collabName) const;
 	int findTaskIndexById(unsigned id) const;
 	int findCollabTaskIndexById(unsigned id) const;
-	void createDashBoard();
+	
 	
 };
 

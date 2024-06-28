@@ -38,6 +38,7 @@ public:
 	Task(unsigned id, const MyString& name, const MyString& desc);
 	Task() = default;
 	bool isDueDateToday() const;
+	bool isDateExpired() const;
 	void saveToBinary(std::ofstream& ofs) const;
 	void loadFromBinary(std::ifstream& ifs);
 	

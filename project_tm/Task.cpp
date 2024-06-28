@@ -110,6 +110,22 @@ bool Task::isDueDateToday() const
 	return currentDay == dueDate.value();
 }
 
+bool Task::isDateExpired() const
+{
+	if (!dueDate.has_value())
+		return false;
+
+	std::time_t t = time(0);
+	std::tm* now = std::localtime(&t);
+
+	Date currentDay;
+	currentDay.setYear(now->tm_year + 1900);
+	currentDay.setMonth(now->tm_mon + 1);
+	currentDay.setDay(now->tm_mday);
+
+	return dueDate.value() < currentDay;
+}
+
 void Task::saveToBinary(std::ofstream& ofs) const
 {
 	ofs.write(reinterpret_cast<const char*>(&id), sizeof(unsigned));

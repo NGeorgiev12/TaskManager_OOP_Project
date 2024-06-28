@@ -12,6 +12,12 @@ void ListCollaborationCommand::execute()
 	int userIndex = taskManager.getCurrentUserIndex();
 	const User& user = taskManager.getUsers()[userIndex];
 
+	if (user.getCollabNames().getSize() == 0)
+	{
+		std::cout << "User doesn't participate in any collaborations!" << std::endl;
+		return;
+	}
+		
 	for (int i = 0; i < user.getCollabNames().getSize(); i++)
 	{
 		std::cout << user.getCollabNames()[i] << std::endl;

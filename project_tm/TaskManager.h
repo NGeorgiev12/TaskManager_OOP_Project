@@ -10,14 +10,10 @@ class TaskManager
 {
 public:
 	// constructors
-	TaskManager() = default;
-	TaskManager(int currentUserIndex,
-			    const Vector<User>& users, const Vector<Collaboration>& collabs);
-
-	TaskManager(const char* fileName);
+	TaskManager(const MyString& fileName);
 
 	// getters
-	const MyString& getName() const;
+	const MyString& getFileName() const;
 	const Vector<User>& getUsers() const;
 	const Vector<Collaboration>& getCollabs() const;
 	int getCurrentUserIndex() const;
@@ -39,6 +35,7 @@ public:
 	void deleteUserTask(int userIndex, unsigned taskId);
 	void removeCollaboration(const MyString& collabName);
 	void removeCollabNameForUser(int userIndex, const MyString& collabName);
+	void removeUserCollabPtr(int userIndex, unsigned collabTaskId);
 
 	// modify functions
 	void setCurrentUserId(int newId);
@@ -59,7 +56,7 @@ public:
 
 private:
 	int currentUserIndex = -1;
-	const MyString& name = "TaskManager"; // name of taskManager
+	MyString fileName;
 	Vector<User> users;
 	Vector<Collaboration> collabs;
 

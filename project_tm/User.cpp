@@ -109,23 +109,14 @@ void User::removeTaskFromDashBoard(unsigned id)
 void User::deleteTask(unsigned taskId)
 {
     int taskIndex = findTaskIndexById(taskId);
-    int collabTaskIndex = findCollabTaskIndexById(taskId);
 
-    if (taskIndex == -1 && collabTaskIndex == -1)
+    if (taskIndex == -1)
         throw std::invalid_argument("There is no such task!");
 
-    if (taskIndex != -1)
-    {
-        tasks.erase(taskIndex);
-        if (isTaskInDashBoard(tasks[taskIndex].getId()))
-            dashboard.removeTaskId(tasks[taskIndex].getId());
-    }    
-    else
-    {
-        collabTasks.erase(collabTaskIndex);
-        if (isCollabTaskInDashBoard(collabTasks[collabTaskIndex]->getId()))
-            dashboard.removeTaskId(collabTasks[collabTaskIndex]->getId());
-    }
+    tasks.erase(taskIndex);
+    if (isTaskInDashBoard(tasks[taskIndex].getId()))
+        dashboard.removeTaskId(tasks[taskIndex].getId());
+    
 }
 
 void User::setTaskStatus(Status status, unsigned taskId)
@@ -161,6 +152,18 @@ void User::removeCollabName(const MyString& collabName)
     }
 
     throw std::invalid_argument("There is no collab with this name");
+}
+
+void User::removeCollabPtr(unsigned collabTaskId)
+{
+    int collabTaskIndex = findCollabTaskIndexById(collabTaskId);
+    if (collabTaskIndex == -1)
+        throw std::invalid_argument("There is no such collabTask");
+
+    collabTasks.erase(collabTaskIndex);
+
+    if (isCollabTaskInDashBoard(collabTasks[collabTaskIndex]->getId()))
+        dashboard.removeTaskId(collabTasks[collabTaskIndex]->getId());
 }
 
 void User::addCollabTaskPtr(CollaborationTask* ptr, unsigned collabTaskId)
@@ -201,26 +204,30 @@ void User::loadUserFromBinary(std::ifstream& ifs)
     password.loadFromBinary(ifs);
 
     dashboard.loadFromBinary(ifs);
-    if (dashboard.getCurrentDate() != getToday())
+    tasks.loadFromBinary(ifs);
+    /*if (dashboard.getCurrentDate() != getToday())
     {
         dashboard.freeTaskIds();
         for (int i = 0; i < tasks.getSize(); i++)
         {
+            std::cout << "neshto" << std::endl;
             if (tasks[i].isDueDateToday())
                 dashboard.addTaskId(tasks[i].getId());
         }
-    }
-        
-    tasks.loadFromBinary(ifs);
+    }*/
+   // createDashBoard();
+    
     collabNames.loadFromBinary(ifs);
 }
 
 User::User(MyString&& username, MyString&& password) : username(std::move(username)), password(std::move(password))
 {
+    createDashBoard();
 }
 
 User::User(const MyString& username, const MyString& password) : username(username), password(password)
 {
+    createDashBoard();
 }
 
 bool User::isIdUnique(unsigned id) const
@@ -292,21 +299,31 @@ void User::createDashBoard()
     {
         for (int i = 0; i < dashboard.getTaskIds().getSize(); i++)
         {
-            setTaskStatus(Status::OVERDUE, dashboard.getTaskIds()[i]);
+            int taskIndex = findTaskIndexById(dashboard.getTaskIds()[i]);
+            int collabTaskIndex = findCollabTaskIndexById(dashboard.getTaskIds()[i]);
 
-            dashboard.freeTaskIds();
-            for (int i = 0; i < tasks.getSize(); i++)
+            if (taskIndex != -1 && tasks[taskIndex].isDateExpired())
             {
-                if (tasks[i].isDueDateToday())
-                    dashboard.addTaskId(tasks[i].getId());
+                setTaskStatus(Status::OVERDUE, dashboard.getTaskIds()[i]);
             }
+            else if (collabTaskIndex!=-1&&collabTasks[collabTaskIndex]->isDateExpired())
+            {
+                setTaskStatus(Status::OVERDUE, dashboard.getTaskIds()[i]);
+            }
+        }
 
-            for (int i = 0; i < collabTasks.getSize(); i++)
-            {
-                if (collabTasks[i]->getDueDate() == getToday())
-                    dashboard.addTaskId(collabTasks[i]->getId());
-                // priemame nagotovo che id-tata sa razlichni
-            }
+        dashboard.freeTaskIds();
+        for (int i = 0; i < tasks.getSize(); i++)
+        {
+            if (tasks[i].isDueDateToday())
+                dashboard.addTaskId(tasks[i].getId());
+        }
+
+        for (int i = 0; i < collabTasks.getSize(); i++)
+        {
+            if (collabTasks[i]->getDueDate() == getToday())
+                dashboard.addTaskId(collabTasks[i]->getId());
+            // priemame che id-tata sa razlichni
         }
     }
 }

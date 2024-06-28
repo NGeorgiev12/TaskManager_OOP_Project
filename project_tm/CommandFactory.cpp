@@ -85,6 +85,10 @@ const size_t addUserToCollaborationCommandSize = 8;
 const char* assignTaskCommand = "assign-task";
 const size_t assignTaskCommandSize = 11;
 
+constexpr size_t DATE_SYMBOLS_COUNTER = 10;
+constexpr size_t YEAR_SYMBOLS_COUNTER = 4;
+constexpr size_t MONTH_SYMBOLS_COUNTER = 2;
+
 enum class CommandType
 {
     REGISTER,
@@ -124,6 +128,39 @@ static bool isNumber(const MyString& str)
             return false;
     }
     return true;
+}
+
+static bool isDate(const MyString& str)
+{
+    if (str.getSize() != DATE_SYMBOLS_COUNTER) // zaradi praznoto mqsto
+        return false;
+
+    unsigned index = 0;
+    MyString year;
+    while (index < YEAR_SYMBOLS_COUNTER)
+    {
+        year += str[index++];
+    }
+    
+    if (!isNumber(year) || str[index++] != '-')
+        return false;
+
+    MyString month;
+    while (index < MONTH_SYMBOLS_COUNTER + YEAR_SYMBOLS_COUNTER + 1)
+    {
+        month += str[index++];
+    }
+
+    if (!isNumber(month) || str[index++] != '-')
+        return false;
+
+    MyString day;
+    while (index < str.getSize())
+    {
+        day += str[index++];
+    }
+
+    return isNumber(day);
 }
 
 static CommandType identifyCommand(const MyString& str)
@@ -285,16 +322,31 @@ static Command* makeListTaskCommand(TaskManager& tm, const MyString& str)
     {
         return new ListTasksCommand(tm);
     }
-    MyString dueDate;
-    unsigned index = 1; // da ne hvashtame praznoto mqsto
-    
-    while (index < str.getSize())
-    {
-        dueDate += str[index++];
-    }
-    Date date(std::move(dueDate));
 
-    return new ListTasksCommand(tm, Optional<Date>(std::move(date)));
+    unsigned index = 1; // da ne hvashtame praznoto mqsto
+    if (isDate(str.c_str() + 1))
+    {
+        MyString dueDate;
+
+        while (index < str.getSize())
+        {
+            dueDate += str[index++];
+        }
+
+        Date date(std::move(dueDate));
+        return new ListTasksCommand(tm, Optional<Date>(std::move(date)));
+    }
+    else 
+    {
+        MyString collabName;
+
+        while (index < str.getSize())
+        {
+            collabName += str[index++];
+        }
+
+        return new ListTasksCommand(tm, Optional<MyString>(std::move(collabName)));
+    }
 }
 
 static Command* makeUpdateTaskNameCommand(TaskManager& tm, const MyString& str)
@@ -460,6 +512,18 @@ static Command* makeAddCollaborationCommand(TaskManager& tm, const MyString& str
     return new AddCollaborationCommand(tm, std::move(collabName));
 }
 
+static Command* makeDeleteCollaborationCommand(TaskManager& tm, const MyString& str)
+{
+    MyString collabName;
+    unsigned index = 0;
+    while (index < str.getSize())
+    {
+        collabName += str[index++];
+    }
+
+    return new DeleteCollaborationCommand(tm, std::move(collabName));
+}
+
 static Command* makeListCollaborationCommand(TaskManager& tm, const MyString& str)
 {
     return new ListCollaborationCommand(tm);
@@ -601,6 +665,10 @@ Command* CommandFactory::makeCommand(TaskManager& tm, const MyString& str)
         case CommandType::ADD_COLLABORATION:
         {
             return makeAddCollaborationCommand(tm, str.substr(addCollaborationCommandSize + 1, str.getSize() - addCollaborationCommandSize + 1));
+        }
+        case CommandType::DELETE_COLLABORATION:
+        {
+            return makeDeleteCollaborationCommand(tm, str.substr(deleteCollaborationCommandSize + 1, str.getSize() - deleteCollaborationCommandSize + 1));
         }
         case CommandType::LIST_COLLABORATIONS:
         {

@@ -21,29 +21,24 @@ static void SetUserCollabTasks(User& user, Vector<Collaboration>& collabs)
 	}
 }
 
-TaskManager::TaskManager(int currentUserIndex, const Vector<User>& users, const Vector<Collaboration>& collabs)
+TaskManager::TaskManager(const MyString& fileName)
 {
-	this->currentUserIndex = currentUserIndex;
-	this->users = users;
-	this->collabs = collabs;
-}
+	this->fileName = fileName;
 
-TaskManager::TaskManager(const char* fileName)
-{
+	std::ifstream ifs(fileName.c_str(), std::ios::binary | std::ios::in);
 
-	std::ifstream ifs(fileName, std::ios::binary | std::ios::in);
 
 	if (!ifs.is_open())
 	{
-		throw std::runtime_error("Cannot open stream!");
+		return;
 	}
 	
 	loadFromBinary(ifs);
 }
 
-const MyString& TaskManager::getName() const
+const MyString& TaskManager::getFileName() const
 {
-	return name;
+	return fileName;
 }
 
 const Vector<User>& TaskManager::getUsers() const
@@ -134,6 +129,11 @@ void TaskManager::removeCollaboration(const MyString& collabName)
 void TaskManager::removeCollabNameForUser(int userIndex, const MyString& collabName)
 {
 	users[userIndex].removeCollabName(collabName);
+}
+
+void TaskManager::removeUserCollabPtr(int userIndex, unsigned collabTaskId)
+{
+	users[userIndex].removeCollabPtr(collabTaskId);
 }
 
 void TaskManager::addUserToCollabWorkGroup(const MyString& collabName, MyString&& username)
@@ -230,6 +230,7 @@ void TaskManager::loadFromBinary(std::ifstream& ifs)
 		user.loadUserFromBinary(ifs);
 
 		SetUserCollabTasks(user, collabs);
+		user.createDashBoard();
 		users.pushBack(std::move(user));
 	}
 }

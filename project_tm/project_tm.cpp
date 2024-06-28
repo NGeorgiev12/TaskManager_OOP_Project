@@ -29,9 +29,7 @@ void run(TaskManager& tm)
 int main()
 {
 	
-	TaskManager tm3("TaskManager.dat");
+	TaskManager tm3("TaskManager1.dat");
 	run(tm3);
-
-	// функциите от колаборацията не са напълно готови и още не са вкарани в факторито
 	
 }
